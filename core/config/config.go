@@ -1,119 +1,64 @@
 package config
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
-	"os/user"
-	"time"
-
-	"github.com/denisbrodbeck/machineid"
+	"path/filepath"
 )
 
-// Config holds the application configuration
 type Config struct {
-	API             APIConfig `json:"api"`
-	UserName        string    `json:"user_name"`
-	ExtensionName   string    `json:"extension_name"`
-	MachineID       string    `json:"machine_id"`
-	InsightsVersion string    `json:"insights_version"`
-	Mode            string    `json:"mode"`
+	Version     string `json:"version"`
+	Environment string `json:"environment"`
+	LogLevel    string `json:"log_level"`
+	Debug       bool   `json:"debug"`
 }
 
-// APIConfig holds API-related configuration
-type APIConfig struct {
-	Endpoint string        `json:"endpoint"`
-	Timeout  time.Duration `json:"timeout"`
-}
-
-// Default returns the default configuration
-func Default() *Config {
-	machineID, err := machineid.ID()
-	if err != nil {
-		// 处理获取 machine ID 失败的情况，如果需要可以增加异常处理逻辑
-		machineID = "unknown-machine-id"
-	}
-	userName := "unknown"
-	if u, err := user.Current(); err == nil {
-		userName = u.Username
+func Load() (*Config, error) {
+	// Try to load from config file first
+	if cfg, err := loadFromFile(); err == nil {
+		return cfg, nil
 	}
 
-	// Load mode from environment or .env file
-	mode := loadModeFromEnv()
-
+	// Return default config if file doesn't exist or can't be loaded
 	return &Config{
-		API: APIConfig{
-			Endpoint: "https://gaia.mediatek.inc/o11y/upload_locs",
-			Timeout:  10 * time.Second,
-		},
-		UserName:        userName,
-		ExtensionName:   "Claude-Code",
-		MachineID:       machineID,
-		InsightsVersion: "0.0.1",
-		Mode:            mode,
-	}
+		Version:     "1.0.0",
+		Environment: "development",
+		LogLevel:    "info",
+		Debug:       false,
+	}, nil
 }
 
-// loadModeFromEnv loads MODE from process env, allowing an optional .env file in CWD.
-func loadModeFromEnv() string {
-	// Best effort: read .env and export keys to process env
-	if data, err := os.ReadFile(".env"); err == nil {
-		lines := string(data)
-		start := 0
-		for i := 0; i <= len(lines); i++ {
-			if i == len(lines) || lines[i] == '\n' || lines[i] == '\r' {
-				line := lines[start:i]
-				start = i + 1
-				line = trimSpace(line)
-				if line == "" || line[0] == '#' {
-					continue
-				}
-				eq := -1
-				for j := 0; j < len(line); j++ {
-					if line[j] == '=' {
-						eq = j
-						break
-					}
-				}
-				if eq <= 0 {
-					continue
-				}
-				key := trimSpace(line[:eq])
-				val := trimSpace(line[eq+1:])
-				val = trimQuotes(val)
-				if key != "" {
-					_ = os.Setenv(key, val)
-				}
-			}
-		}
+func loadFromFile() (*Config, error) {
+	configPath := getConfigPath()
+
+	// Check if config file exists
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("config file does not exist")
 	}
 
-	mode := os.Getenv("MODE")
-	if mode == "" {
-		mode = os.Getenv("mode")
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
-	if mode == "" {
-		mode = "STOP"
+
+	var config Config
+	if err := json.Unmarshal(data, &config); err != nil {
+		return nil, fmt.Errorf("failed to parse config file: %w", err)
 	}
-	return mode
+
+	return &config, nil
 }
 
-func trimSpace(s string) string {
-	// minimal space trim to avoid importing strings
-	start := 0
-	for start < len(s) && (s[start] == ' ' || s[start] == '\t') {
-		start++
+func getConfigPath() string {
+	if configPath := os.Getenv("CONFIG_PATH"); configPath != "" {
+		return configPath
 	}
-	end := len(s)
-	for end > start && (s[end-1] == ' ' || s[end-1] == '\t') {
-		end--
-	}
-	return s[start:end]
-}
 
-func trimQuotes(s string) string {
-	if len(s) >= 2 {
-		if (s[0] == '"' && s[len(s)-1] == '"') || (s[0] == '\'' && s[len(s)-1] == '\'') {
-			return s[1 : len(s)-1]
-		}
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "./config.json"
 	}
-	return s
+
+	return filepath.Join(homeDir, ".go-template", "config.json")
 }

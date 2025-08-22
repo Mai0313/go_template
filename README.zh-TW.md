@@ -1,276 +1,225 @@
-# Claude Code 安裝指南
+# Go 模板專案
 
 [English](README.md) | 繁體中文 | [简体中文](README.zh-CN.md)
 
 ## 概述
 
-Claude Code 是一個跨平台的命令列工具 (CLI)，支援 Windows、macOS 和 Linux 系統。本指南將幫助您使用自動安裝程式快速設定 Claude Code CLI。
+這是一個具有良好結構化目錄佈局和完整 GitHub Actions 工作流程的 Go 專案模板。它為構建具有多個命令、跨平台構建和自動化 CI/CD 管道的 Go 應用程式提供了堅實的基礎。
 
-> **注意**：本教學中的截圖為 Windows 環境，但 macOS 和 Linux 的操作流程基本相同，因為這是一個命令列工具。
+## 專案結構
 
-## 安裝程式功能
+```
+.
+├── cmd/                    # 命令行應用程式
+│   ├── app/               # 主應用程式
+│   └── cli/               # CLI 工具
+├── core/                  # 核心業務邏輯
+│   └── config/           # 配置管理
+├── docker/               # Docker 配置
+├── .github/              # GitHub Actions 工作流程
+│   ├── workflows/        # CI/CD 管道
+│   ├── ISSUE_TEMPLATE/   # 問題模板
+│   └── ...              # 其他 GitHub 配置
+├── go.mod               # Go 模組定義
+├── Makefile            # 構建自動化
+└── README.md           # 此檔案
+```
 
-安裝程式會自動執行以下步驟：
+## 特性
 
-1. **檢查 Node.js 環境**（需要 v22 或更新版本）
-   - macOS/Linux：嘗試自動安裝 Node.js
-   - Windows：使用內建的 Node.js 安裝包，安裝至 `%USERPROFILE%\.claude\nodejs`，並自動設定環境變數
+- ✅ **多命令結構**：分離的 `app` 和 `cli` 命令
+- ✅ **跨平台構建**：支援 Linux、macOS、Windows（AMD64 和 ARM64）
+- ✅ **GitHub Actions**：完整的 CI/CD 管道，具有自動構建和發布功能
+- ✅ **Docker 支援**：即用型 Docker 配置
+- ✅ **配置管理**：靈活的配置系統，支援環境變數
+- ✅ **Makefile 自動化**：簡單的構建、測試和打包命令
+- ✅ **多語言 README**：英文、繁體中文、簡體中文
 
-2. **安裝 Claude Code CLI**
-   - 透過 npm 全域安裝最新版本：`@anthropic-ai/claude-code@latest`
-   - 自動偵測內部 npm registry 和 MLOP gateway
+## 快速開始
 
-3. **建立設定檔**
-   - 在 `~/.claude/settings.json` 建立預設設定
-   - 如檔案已存在，會詢問是否覆蓋並自動備份舊設定
+### 先決條件
 
-## 特色功能
+- Go 1.23.0 或更高版本
+- Make（用於使用 Makefile 命令）
+- Docker（可選，用於容器化）
 
-- ✅ 確保每次都安裝最新版本（無需手動執行 `claude update`）
-- ✅ 自動備份現有設定檔（格式：`settings.backup_YYYYMMDD_HHMMSS.json`）
-- ✅ 跨平台支援：Windows、macOS、Linux
-- ✅ 智慧網路環境偵測
+### 安裝
 
----
+1. **克隆或使用此模板**：
+   ```bash
+   git clone <your-repo-url>
+   cd go-template
+   ```
 
-## 安裝步驟
+2. **更新模組名稱**：
+   ```bash
+   # 在 go.mod 中將 'go-template' 替換為您的實際模組名稱
+   go mod edit -module your-module-name
+   ```
 
-### 步驟 1：下載安裝包
+3. **安裝依賴項**：
+   ```bash
+   go mod tidy
+   ```
 
-前往發佈頁面下載對應您作業系統的安裝包：  
-🔗 **[Claude Code 發佈頁面](https://gitea.mediatek.inc/IT-GAIA/claude-code/releases)**
+### 構建
 
-支援的平台：
-- 🖥️ **Windows**：x64 / ARM64
-- 🍎 **macOS**：Intel / Apple Silicon
-- 🐧 **Linux**：x64 / ARM64
-
-![發佈頁面](images/release_page.png)
-
-### 步驟 2：解壓縮檔案
-
-將下載的 zip 檔案解壓縮到容易存取的位置，建議選擇可以輕鬆從終端機或命令提示字元開啟的資料夾。
-
-![解壓縮範例](images/unzip.jpeg)
-
-### 步驟 3：執行安裝程式
-
-根據您的作業系統執行對應的安裝程式：
-
-#### 🐧 Linux
+#### 本地構建所有命令：
 ```bash
-# 在解壓縮的資料夾中開啟終端機
-chmod +x ./installer  # 給予執行權限（如需要）
-./installer           # 執行安裝程式
+make all
 ```
 
-#### 🍎 macOS
+#### 為特定平台構建：
 ```bash
-# 方法 1：直接雙擊 installer 檔案
-# 方法 2：在終端機中執行
-./installer
+make build_linux_amd64
+make build_windows_amd64
+make build_darwin_arm64
 ```
 
-#### 🖥️ Windows
-```powershell
-# 方法 1：直接雙擊 installer.exe
-# 方法 2：在 PowerShell 中執行
-.\installer.exe
+#### 為所有平台構建：
+```bash
+make build-all
 ```
 
-![安裝程式資料夾](images/installer_folder.jpeg)
+#### 創建分發包：
+```bash
+make package-all
+```
 
-### 步驟 4：設定安裝選項
+### 運行
 
-安裝程式啟動後，您會看到主選單：
+#### 運行主應用程式：
+```bash
+./build/app
+# 或
+make run
+```
 
-1. **開始安裝**：按下 Enter 鍵 或 選擇需要的功能
+#### 運行 CLI 工具：
+```bash
+./build/cli --help
+./build/cli --version
+```
 
-![安裝程式主選單](images/installer_menu1.png)
+## 開發
 
-![下載中](images/installing.png)
+### 專案自定義
 
-> ⏳ **請耐心等候**：此步驟包含 Node.js v22 和 Claude Code CLI 的下載與安裝，可能需要幾分鐘時間。
+1. **更新應用程式名稱**：
+   - 修改 `Makefile` 中的 `BIN_NAME` 和 `CLI_NAME`
+   - 更新 GitHub Actions 工作流程中的二進制檔案名稱
 
-完成後你會看到這個畫面引導你進行下一步
+2. **添加您的業務邏輯**：
+   - 在 `cmd/app/main.go` 中實現您的應用程式邏輯
+   - 在 `cmd/cli/main.go` 中添加 CLI 命令和功能
+   - 在 `core/` 下創建額外的包用於共享邏輯
 
-![安裝完成](images/after_installed.png)
+3. **配置**：
+   - 修改 `core/config/config.go` 以添加您的配置欄位
+   - 根據需要更新預設配置值
 
-### 步驟 5：API Key 設定
+4. **Docker**：
+   - 為您的應用程式需求自定義 `docker/Dockerfile`
+   - 在 GitHub Actions 中更新 Docker 映像名稱
 
-安裝完成後，您可以選擇 API Key 的設定方式：
+### 可用的 Make 命令
 
-#### 選項 1：自動設定 GAISF Token（推薦）
+```bash
+make help              # 顯示可用命令
+make all               # 本地構建所有命令
+make build-all         # 為所有平台構建
+make package-all       # 創建分發包
+make clean             # 移除構建產物
+make fmt               # 格式化 Go 程式碼
+make test              # 運行測試
+make run               # 構建並運行應用程式
+```
 
-- 根據引導輸入您的 MediaTek 帳號和密碼
-- 系統會自動取得並設定 GAISF Token
+## GitHub Actions 工作流程
 
-![GAISF 設定](images/setup_gaisf.png)
+此模板包含幾個預配置的工作流程：
 
-#### 選項 2：手動輸入 GAISF Token
+- **`build_package.yml`**：為所有平台構建和發布包
+- **`build_image.yml`**：構建和推送 Docker 映像
+- **`auto_labeler.yml`**：自動標記拉取請求
+- **`jira.yml`**：JIRA 整合用於問題追蹤
+- **`updater.yml`**：自動依賴項更新
 
-- 如果您已經有 GAISF Token，可直接貼上到輸入框中
+### 自定義工作流程
 
-![貼上 GAISF Token](images/paste_gaisf_token.png)
+1. **更新儲存庫引用**：
+   - 將 `gitea.mediatek.inc/IT-GAIA/go-template` 替換為您的儲存庫 URL
+   - 如需要，更新 Docker 註冊表 URL
 
-#### 選項 3：跳過設定（進階使用者）
+2. **配置密鑰**：
+   - `GITHUB_TOKEN`：用於儲存庫存取
+   - `GT_TOKEN`：用於 Docker 註冊表存取
+   - `JIRA_TOKEN`：用於 JIRA 整合（可選）
+   - `SSH_KEY`：用於 SSH 存取（如需要）
 
-- 稍後手動編輯設定檔案來設定 API Key
+3. **修改構建目標**：
+   - 如果您不需要所有平台，請在工作流程中更新平台目標
+   - 根據需要調整構建命令
 
-![跳過設定](images/skip_setup.png)
+## 配置
 
-### 步驟 6：完成安裝
+應用程式支援通過以下方式進行配置：
 
-安裝成功後會顯示完成畫面：
+1. **配置檔案**：`~/.go-template/config.json`
+2. **環境變數**：`CONFIG_PATH` 指定自定義配置位置
+3. **預設值**：用於開發的內建預設值
 
-![安裝完成](images/done.png)
-
-### 步驟 7：開始使用
-
-1. **開啟新的終端機/命令提示字元**（重要：需要新視窗才能載入環境變數）
-2. **執行 Claude Code**：
-   ```bash
-   claude
-   ```
-
-![Claude Code CLI](images/claude_code.png)
-
----
-
-## 系統需求
-
-| 項目 | 需求 |
-|------|------|
-| **作業系統** | Windows 10+、macOS 10.15+、或現代 Linux 發行版 |
-| **Node.js** | v22 或更新版本（安裝程式會自動處理） |
-| **網路連線** | 需要連線以下載套件和進行認證 |
-| **權限** | 一般使用者權限即可（無需管理員權限） |
-
----
-
-## 疑難排解
-
-### ❌ 「claude: command not found」錯誤
-
-**解決方法：**
-1. **重新開啟終端機**：關閉目前的終端機並開啟新的，讓 PATH 環境變數生效
-2. **檢查 PATH 設定**：確認 npm 的全域 bin 目錄已加入 PATH
-   ```bash
-   # 檢查 npm 全域目錄
-   npm config get prefix
-   ```
-
-### 🔧 Node.js 安裝問題
-
-#### macOS/Linux
-- 安裝程式會在 Debian/Ubuntu 系統上自動嘗試使用 NodeSource 22.x
-- 如果自動安裝失敗，請手動安裝：
-  1. 前往 [Node.js 官網](https://nodejs.org/) 下載 v22+ 版本
-  2. 安裝完成後重新執行安裝程式
-
-#### Windows
-- 安裝程式會使用內建的 Node.js 安裝包
-- 自動安裝至 `%USERPROFILE%\.claude\nodejs`
-- 如有問題，請確認該目錄的權限設定
-
-### 🔐 認證問題
-
-**常見問題與解決方法：**
-
-1. **GAISF Token 設定失敗**
-   - 檢查 MediaTek 網路連線
-   - 確認帳號密碼正確
-   - 手動開啟 GAISF 登入頁面取得 Token
-
-2. **API 連線問題**
-   - 確認防火牆設定
-   - 檢查公司網路政策
-   - 聯繫 IT 部門確認網路存取權限
-
-### 🔄 重新安裝
-
-如果遇到嚴重問題，可以完全重新安裝：
-
-1. **刪除 Claude 目錄**：
-   ```bash
-   # Windows
-   rmdir /s "%USERPROFILE%\.claude"
-   
-   # macOS/Linux
-   rm -rf ~/.claude
-   ```
-
-2. **重新執行安裝程式**
-
----
-
-## 參考資源
-
-- 📖 **Claude Code 官方文件**：[https://docs.anthropic.com/zh-TW/docs/claude-code](https://docs.anthropic.com/zh-TW/docs/claude-code)
-- ⚙️ **設定說明**：[https://docs.anthropic.com/zh-TW/docs/claude-code/settings](https://docs.anthropic.com/zh-TW/docs/claude-code/settings)
-- 🐛 **問題回報**：[Claude Code Issues](https://gitea.mediatek.inc/IT-GAIA/claude-code/issues)
-
----
-
-## 安裝完成後的檔案結構
-
-### 目錄結構預覽
-
-![Claude 檔案結構](images/claude_structure.png)
-
-### 設定檔案內容 (`~/.claude/settings.json`)
-
+配置範例：
 ```json
 {
-   "env": {
-      "ANTHROPIC_BEDROCK_BASE_URL": "https://mlop-azure-gateway.mediatek.inc",
-      "ANTHROPIC_CUSTOM_HEADERS": "api-key: <<gaisf_token>>",
-      "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-      "CLAUDE_CODE_SKIP_BEDROCK_AUTH": "1",
-      "CLAUDE_CODE_USE_BEDROCK": "1",
-      "DISABLE_TELEMETRY": "1",
-      "NODE_TLS_REJECT_UNAUTHORIZED": "0",
-      "BASH_DEFAULT_TIMEOUT_MS": "36000000",
-      "BASH_MAX_TIMEOUT_MS": "36000000",
-      "MCP_TIMEOUT": "300000",
-      "MCP_TOOL_TIMEOUT": "36000000",
-      "API_TIMEOUT_MS": "600000"
-   },
-   "includeCoAuthoredBy": true,
-   "enableAllProjectMcpServers": true,
-   "hooks": {
-      "Stop": [
-         {
-            "matcher": "*",
-            "hooks": [
-               {
-                  "type": "command",
-                  "command": "C:\\Users\\ds906659\\.claude\\claude_analysis-windows-amd64.exe"
-               }
-            ]
-         }
-      ]
-   }
+  "version": "1.0.0",
+  "environment": "production",
+  "log_level": "info",
+  "debug": false
 }
 ```
 
-### 重要檔案說明
+## Docker 支援
 
-| 檔案/目錄 | 用途 |
-|-----------|------|
-| `~/.claude/settings.json` | 主要設定檔，包含 API 設定和使用者偏好 |
-| `~/.claude/nodejs/` | Windows 專用：內建的 Node.js 安裝目錄 |
-| `~/.claude/settings.backup_*.json` | 自動備份的舊設定檔 |
+構建 Docker 映像：
+```bash
+docker build -f docker/Dockerfile -t your-app .
+```
+
+使用 Docker 運行：
+```bash
+docker run --rm your-app
+```
+
+## 貢獻
+
+1. Fork 儲存庫
+2. 創建功能分支
+3. 進行更改
+4. 如適用，添加測試
+5. 提交拉取請求
+
+## 授權
+
+此模板按原樣提供供您使用。根據需要添加您自己的授權。
+
+## 支援
+
+- 為錯誤或功能請求創建問題
+- 檢查現有文檔和範例
+- 查看 GitHub Actions 日誌以解決構建問題
 
 ---
 
 ## 下一步
 
-安裝完成後，您可以：
+設置此模板後：
 
-1. **查看說明**：`claude --help`
-2. **開始新專案**：`claude chat`
-3. **查看版本**：`claude --version`
-4. **更新設定**：編輯 `~/.claude/settings.json`
+1. **自定義應用程式邏輯**在 `cmd/` 目錄中
+2. **添加您的業務邏輯**在 `core/` 包中
+3. **更新配置**以符合您的需求
+4. **修改 GitHub Actions**以滿足您的 CI/CD 要求
+5. **在適當的目錄中添加測試**
+6. **更新文檔**以反映您的應用程式
 
-祝您使用愉快！ 🎉
+祝您編程愉快！🚀
