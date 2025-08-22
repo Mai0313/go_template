@@ -111,3 +111,11 @@ jobs:
           provenance: false
           cache-from: type=registry,ref=${{ steps.extracted_name.outputs.name }}:buildcache
           cache-to: type=registry,ref=${{ steps.extracted_name.outputs.name }}:buildcache,image-manifest=true,oci-mediatypes=true,mode=max
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          image-ref: ${{ steps.extracted_name.outputs.name }}:latest
+          format: sarif
+          output: trivy-results.sarif
+          token-setup-trivy: ${{ secrets.GH_TOKEN }}
