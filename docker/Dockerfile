@@ -1,32 +1,21 @@
-# Build stage
 FROM golang:1.23-alpine AS builder
+LABEL maintainer="Wei Lee <mai@mai0313.com>"
 
+RUN apk add --no-cache make git
 WORKDIR /app
-
-# Copy go mod and sum files
-COPY go.mod go.sum ./
-
-# Download dependencies
-RUN go mod download
-
-# Copy source code
 COPY . .
+RUN make
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/app
+########################################################################################
 
-# Production stage
-FROM alpine:latest AS prod
+FROM alpine:3.21 AS prod
+LABEL maintainer="Wei Lee <mai@mai0313.com>" \
+    org.label-schema.name="cli" \
+    org.label-schema.vendor="Wei Lee" \
+    org.label-schema.schema-version="1.0" \
+    com.centurylinklabs.watchtower.stop-signal="SIGINT"
 
-RUN apk --no-cache add ca-certificates
-
-WORKDIR /root/
-
-# Copy the binary from builder stage
-COPY --from=builder /app/main .
-
-# Expose port (adjust as needed)
-EXPOSE 8080
-
-# Command to run
-CMD ["./main"]
+RUN apk add --no-cache ca-certificates tzdata
+COPY --from=builder /app/build/cli /usr/local/bin/cli
+RUN chmod +x /usr/local/bin/cli
+CMD ["cli"]
