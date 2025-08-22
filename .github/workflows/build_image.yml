@@ -29,7 +29,7 @@ jobs:
         target:
           - name: Build and Push Images (Latest / Release)
             target_step: prod
-            tag: gitea.mediatek.inc/IT-GAIA/go-template
+            tag: gitea.mediatek.inc/actions/go-template
 
     env:
       BUILDKIT_NO_CLIENT_TOKEN: 1 # docker buildkit env
