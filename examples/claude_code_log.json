@@ -1,0 +1,43 @@
+{
+    "extensionName": "Claude-Code",
+    "insightsVersion": "0.0.1",
+    "machineId": "5b0dfa41ada84d5180a514698f67bd80",
+    "records": [
+        {
+            "totalUniqueFiles": 2,
+            "totalWriteLines": 66,
+            "totalReadCharacters": 2656,
+            "totalWriteCharacters": 2122,
+            "totalDiffCharacters": 0,
+            "writeToFileDetails": [
+                {
+                    "filePath": "/proj/ds906659/aith/mtkllm_sdk/MAKEFILE.md",
+                    "lineCount": 66,
+                    "characterCount": 2122,
+                    "timestamp": 1755841750178,
+                    "aiOutputContent": "# Makefile Command Reference\n\n## Available Commands\n\n### `help`\n- **Description**: Display help information showing available Makefile commands\n- **Usage**: `make help`\n- **Output**: Lists all commands with their descriptions in color-coded format\n\n### `clean`\n- **Description**: Clean up auto-generated files and system artifacts\n- **Usage**: `make clean`\n- **Actions**:\n  - Remove temporary directories and cached files\n  - Delete `.DS_Store` files\n  - Remove Python cache files (`__pycache__`, `.pyc`, `.pyo`)\n  - Remove `.pytest_cache` and `.ipynb_checkpoints`\n  - Prune and garbage collect Git repository\n\n### `uv-install`\n- **Description**: Install Universal Python package manager (uv)\n- **Usage**: `make uv-install`\n- **Actions**:\n  - Download and install uv package manager\n  - Update `.bashrc` with uv path\n  - Prompts to restart terminal for path changes\n\n### `format`\n- **Description**: Run pre-commit hooks for code formatting\n- **Usage**: `make format`\n- **Actions**: Execute all pre-commit hooks across the project\n\n### `test`\n- **Description**: Run project test suite\n- **Usage**: `make test`\n- **Actions**: Execute all tests using pytest\n\n### `submodule-init`\n- **Description**: Initialize and update all Git submodules recursively\n- **Usage**: `make submodule-init`\n\n### `submodule-update`\n- **Description**: Update all Git submodules to their latest remote versions\n- **Usage**: `make submodule-update`\n\n### `gen-docs`\n- **Description**: Generate documentation for different project components\n- **Usage**: `make gen-docs`\n- **Generates documentation for**:\n  - Scripts\n  - Examples\n  - Source code\n  - Notebooks\n\n### `deploy`\n- **Description**: Deploy the service to MKE (Managed Kubernetes Environment)\n- **Usage**: `make deploy`\n- **Actions**:\n  - Delete existing Kubernetes resources in `srv-tma` namespace\n  - Apply Kubernetes configuration\n  - List deployed resources\n\n## Usage Notes\n- Ensure you have the required dependencies installed before running commands\n- Some commands may require specific environment setup or access permissions\n- Always review the changes before deploying to production",
+                    "fileContent": "# Makefile Command Reference\n\n## Available Commands\n\n### `help`\n- **Description**: Display help information showing available Makefile commands\n- **Usage**: `make help`\n- **Output**: Lists all commands with their descriptions in color-coded format\n\n### `clean`\n- **Description**: Clean up auto-generated files and system artifacts\n- **Usage**: `make clean`\n- **Actions**:\n  - Remove temporary directories and cached files\n  - Delete `.DS_Store` files\n  - Remove Python cache files (`__pycache__`, `.pyc`, `.pyo`)\n  - Remove `.pytest_cache` and `.ipynb_checkpoints`\n  - Prune and garbage collect Git repository\n\n### `uv-install`\n- **Description**: Install Universal Python package manager (uv)\n- **Usage**: `make uv-install`\n- **Actions**:\n  - Download and install uv package manager\n  - Update `.bashrc` with uv path\n  - Prompts to restart terminal for path changes\n\n### `format`\n- **Description**: Run pre-commit hooks for code formatting\n- **Usage**: `make format`\n- **Actions**: Execute all pre-commit hooks across the project\n\n### `test`\n- **Description**: Run project test suite\n- **Usage**: `make test`\n- **Actions**: Execute all tests using pytest\n\n### `submodule-init`\n- **Description**: Initialize and update all Git submodules recursively\n- **Usage**: `make submodule-init`\n\n### `submodule-update`\n- **Description**: Update all Git submodules to their latest remote versions\n- **Usage**: `make submodule-update`\n\n### `gen-docs`\n- **Description**: Generate documentation for different project components\n- **Usage**: `make gen-docs`\n- **Generates documentation for**:\n  - Scripts\n  - Examples\n  - Source code\n  - Notebooks\n\n### `deploy`\n- **Description**: Deploy the service to MKE (Managed Kubernetes Environment)\n- **Usage**: `make deploy`\n- **Actions**:\n  - Delete existing Kubernetes resources in `srv-tma` namespace\n  - Apply Kubernetes configuration\n  - List deployed resources\n\n## Usage Notes\n- Ensure you have the required dependencies installed before running commands\n- Some commands may require specific environment setup or access permissions\n- Always review the changes before deploying to production"
+                }
+            ],
+            "readFileDetails": [
+                {
+                    "filePath": "/proj/ds906659/aith/mtkllm_sdk/Makefile",
+                    "characterCount": 2656,
+                    "timestamp": 1755841694411,
+                    "aiOutputContent": "",
+                    "fileContent": "help:  ## Show help\n\t@grep -E '^[.a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = \":.*?## \"}; {printf \"\\033[36m%-30s\\033[0m %s\\n\", $$1, $$2}'\n\nclean: ## Clean autogenerated files\n\trm -rf tmp dist .cache ./docs/Scripts ./docs/Examples ./docs/Reference ./docs/Notebooks .github/reports .pytest_cache .coverage .github/coverage_html_report\n\tfind . -type f -name \"*.DS_Store\" -ls -delete\n\tfind . | grep -E \"(__pycache__|\\.pyc|\\.pyo)\" | xargs rm -rf\n\tfind . | grep -E \".pytest_cache\" | xargs rm -rf\n\tfind . | grep -E \".ipynb_checkpoints\" | xargs rm -rf\n\tgit fetch --prune\n\tgit gc --prune=now --aggressive\n\nuv-install:  ## Install uv on your system\n\tcurl -LsSf https://astral.sh/uv/install.sh | sh\n\t@echo 'export PATH=\"$$HOME/.local/bin:$$PATH\"' >> ~/.bashrc\n\t@echo 'Installed uv, please re-open your bash terminal or zsh terminal.'\n\nformat: ## Run pre-commit hooks\n\tpre-commit run -a\n\ntest: ## Run all tests\n\tpytest\n\nsubmodule-init: ## Install and update all submodules\n\tgit submodule update --recursive --init\n\nsubmodule-update:  # Update all submodules\n\tgit submodule update --recursive --remote\n\ngen-docs:  ## Generate documentation\n\tpython ./scripts/gen_docs.py --source scripts --output ./docs/Scripts gen_docs\n\tpython ./scripts/gen_docs.py --source examples --output ./docs/Examples gen_docs\n\tpython ./scripts/gen_docs.py --source ./src --output ./docs/Reference gen_docs\n\tpython ./scripts/gen_docs.py --source ./notebooks --output ./docs/Notebooks gen_docs\n\ndeploy:  ## Deploy the service to MKE\n\t@KUBECONFIG=deployment/k8s/docs.yaml kubectl delete deployment --all --namespace srv-tma --ignore-not-found\n\t@KUBECONFIG=deployment/k8s/docs.yaml kubectl delete service --all --namespace srv-tma --ignore-not-found\n\t@KUBECONFIG=deployment/k8s/docs.yaml kubectl delete secret --all --namespace srv-tma --ignore-not-found\n\t@KUBECONFIG=deployment/k8s/docs.yaml kubectl delete configmap --all --namespace srv-tma --ignore-not-found\n\t@KUBECONFIG=deployment/k8s/docs.yaml kubectl delete ingress --all --namespace srv-tma --ignore-not-found\n\t@KUBECONFIG=deployment/k8s/docs.yaml kubectl apply -k deployment/mtkllm --namespace srv-tma\n\tKUBECONFIG=deployment/k8s/docs.yaml kubectl get all --namespace srv-tma\n\n# deploy:  ## Deploy the service to MKE\n# \tKUBECONFIG=deployment/k8s/docs.yaml kubectl delete deployment srv-tma-sdk --namespace srv-tma --ignore-not-found\n# \tKUBECONFIG=deployment/k8s/docs.yaml kubectl delete deployment srv-tma-sdk-docs --namespace srv-tma --ignore-not-found\n# \tKUBECONFIG=deployment/k8s/docs.yaml kubectl apply -k deployment/mtkllm --namespace srv-tma\n# \tKUBECONFIG=deployment/k8s/docs.yaml kubectl get all --namespace srv-tma\n"
+                }
+            ],
+            "applyDiffDetails": [],
+            "toolCallCounts": {
+                "Read": 2,
+                "Write": 1
+            },
+            "taskId": "916ed453-7ffc-4159-ae3f-8343dbaa2ddc",
+            "timestamp": 1755841753062,
+            "folderPath": "/proj/ds906659/aith/mtkllm_sdk",
+            "gitRemoteUrl": "git@git.mediatek.inc:MCTS_research/mtkllm_sdk.git"
+        }
+    ],
+    "user": "ds906659"
+}

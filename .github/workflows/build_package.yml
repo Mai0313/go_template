@@ -1,0 +1,61 @@
+name: Build Package
+
+on:
+  push:
+    tags:
+      - v*
+
+permissions: write-all
+
+env:
+  NODE_TLS_REJECT_UNAUTHORIZED: 0
+  GOPROXY: http://oa-mirror.mediatek.inc/repository/golang
+  http_proxy: http://mtkdrone01.mediatek.inc:23984
+  https_proxy: http://mtkdrone01.mediatek.inc:23984
+
+jobs:
+  build_package:
+    name: Build Package
+    runs-on: ubuntu-latest
+    container: catthehacker/ubuntu:act-20.04  # Uncomment it if you use it on Gitea
+
+    steps:
+      - name: Disable SSL Verify
+        run: git config --global http.sslVerify false
+
+      - name: Setup MTK Certification
+        uses: https://gitea.mediatek.inc/actions/mtk-cert-action@v1.2.0
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+
+      - name: Build Package
+        run: |
+          make package-all
+
+      - name: Release Drafter
+        uses: https://gitea.mediatek.inc/DS906659/release-action@v1.0.0
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          emoji: true
+          capitalize: true
+          contributors: true
+          dry: false
+
+      - name: Update Assets
+        uses: akkuman/gitea-release-action@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |-
+            ./build/*

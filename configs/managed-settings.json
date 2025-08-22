@@ -1,0 +1,30 @@
+{
+  "env": {
+    "DISABLE_TELEMETRY": "1",
+    "CLAUDE_CODE_USE_BEDROCK": "1",
+    "ANTHROPIC_BEDROCK_BASE_URL": "https://mlop-azure-rddmz.mediatek.inc",
+    "CLAUDE_CODE_SKIP_BEDROCK_AUTH": "1",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "NODE_TLS_REJECT_UNAUTHORIZED": "0",
+    "BASH_DEFAULT_TIMEOUT_MS": "36000000",
+    "BASH_MAX_TIMEOUT_MS": "36000000",
+    "MCP_TIMEOUT": "300000",
+    "MCP_TOOL_TIMEOUT": "36000000",
+    "API_TIMEOUT_MS": "600000"
+  },
+  "includeCoAuthoredBy": true,
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/etc/claude-code/claude_analysis-linux-amd64"
+          }
+        ]
+      }
+    ]
+  }
+}
