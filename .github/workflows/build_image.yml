@@ -113,7 +113,6 @@ jobs:
           outputs: type=docker,dest=/tmp/image.tar
           sbom: false
           provenance: false
-          cache-from: type=registry,ref=${{ steps.extracted_name.outputs.name }}:buildcache
 
       - name: Load Docker Image for Scanning
         run: docker load --input /tmp/image.tar
