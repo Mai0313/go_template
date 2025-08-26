@@ -19,7 +19,12 @@ This is a Go project template with a well-structured directory layout and compre
 ├── .github/              # GitHub Actions workflows
 │   ├── workflows/        # CI/CD pipelines
 │   ├── ISSUE_TEMPLATE/   # Issue templates
+│   ├── CODEOWNERS        # Code owners definition
+│   ├── dependabot.yml    # Dependency auto-update configuration
+│   ├── labeler.yml       # Auto-labeling configuration
 │   └── ...              # Other GitHub configurations
+├── .dockerignore         # Docker ignore file
+├── .gitignore           # Git ignore file
 ├── go.mod               # Go module definition
 ├── Makefile            # Build automation
 └── README.md           # This file
@@ -39,7 +44,7 @@ This is a Go project template with a well-structured directory layout and compre
 
 ### Prerequisites
 
-- Go 1.23.0 or later
+- Go 1.23.0 or later (currently supports up to Go 1.24.3)
 - Make (for using Makefile commands)
 - Docker (optional, for containerization)
 
@@ -126,7 +131,9 @@ make build-all         # Build for all platforms
 make clean             # Remove build artifacts
 make fmt               # Format Go code
 make test              # Run tests
+make test-verbose      # Run verbose tests
 make run               # Build and run the application
+make install           # Install binaries to system (/usr/local/bin)
 ```
 
 ## GitHub Actions Workflows
@@ -138,11 +145,12 @@ This template includes several pre-configured workflows:
 - **`auto_labeler.yml`**: Automatically labels pull requests
 - **`jira.yml`**: JIRA integration for issue tracking
 - **`updater.yml`**: Automated dependency updates
+- **`secret_scan.yml`**: Security scanning workflow
 
 ### Customizing Workflows
 
 1. **Update repository references**:
-   - Replace `gitea.mediatek.inc/IT-GAIA/go-template` with your repository URL
+   - Replace example repository URLs with your actual repository URL
    - Update Docker registry URLs if needed
 
 2. **Configure secrets**:

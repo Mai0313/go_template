@@ -12,11 +12,18 @@ name: Publish Docker image
 on:
   push:
     branches:
-      - main
+      - master
     tags:
       - v*
 
 permissions: write-all
+
+env:
+  DOCKER_URL: mtkomcr.mediatek.inc
+  DOCKER_ORG: srv-deepwiki
+  BUILDKIT_NO_CLIENT_TOKEN: 1 # docker buildkit env
+  # gitea action download node.js skip certificate !https
+  NODE_TLS_REJECT_UNAUTHORIZED: 0
 
 jobs:
   build_images:
@@ -29,12 +36,7 @@ jobs:
         target:
           - name: Build and Push Images (Latest / Release)
             target_step: prod
-            tag: gitea.mediatek.inc/actions/go-template
-
-    env:
-      BUILDKIT_NO_CLIENT_TOKEN: 1 # docker buildkit env
-      # gitea action download node.js skip certificate !https
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
+            tag: ${{ env.DOCKER_URL }}/${{ env.DOCKER_ORG }}/${{ github.event.repository.name }}
 
     steps:
       - name: Disable SSL Verify
@@ -46,15 +48,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to the Container registry
         uses: docker/login-action@v3.4.0
         with:
-          registry: gitea.mediatek.inc
-          username: ${{ github.actor }}
-          password: ${{ secrets.GT_TOKEN }}
+          registry: ${{ env.DOCKER_URL }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
 
       - name: Setup docker context for buildx
         run: |
@@ -98,7 +100,35 @@ jobs:
           IMAGE_NAME=$(echo "${{ steps.meta.outputs.tags }}" | head -n1 | cut -d':' -f1)
           echo "name=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
-      - name: ${{ matrix.target.name }}
+      - name: Build Docker Image (without push)
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          context: .
+          file: ./docker/Dockerfile
+          target: ${{ matrix.target.target_step }}
+          tags: |
+            ${{ steps.meta.outputs.tags }}
+          outputs: type=docker,dest=/tmp/image.tar
+          sbom: false
+          provenance: false
+          cache-from: type=registry,ref=${{ steps.extracted_name.outputs.name }}:buildcache
+
+      - name: Load Docker Image for Scanning
+        run: docker load --input /tmp/image.tar
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          image-ref: ${{ steps.extracted_name.outputs.name }}:latest
+          format: sarif
+          output: trivy-results.sarif
+          token-setup-trivy: ${{ secrets.GH_TOKEN }}
+          exit-code: 1
+          severity: 'CRITICAL,HIGH'
+
+      - name: Push Docker Image (after successful scan)
+        if: success()
         uses: docker/build-push-action@v6
         with:
           push: true
@@ -111,11 +141,3 @@ jobs:
           provenance: false
           cache-from: type=registry,ref=${{ steps.extracted_name.outputs.name }}:buildcache
           cache-to: type=registry,ref=${{ steps.extracted_name.outputs.name }}:buildcache,image-manifest=true,oci-mediatypes=true,mode=max
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.32.0
-        with:
-          image-ref: ${{ steps.extracted_name.outputs.name }}:latest
-          format: sarif
-          output: trivy-results.sarif
-          token-setup-trivy: ${{ secrets.GH_TOKEN }}

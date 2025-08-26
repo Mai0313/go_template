@@ -19,7 +19,12 @@
 ├── .github/              # GitHub Actions 工作流程
 │   ├── workflows/        # CI/CD 管道
 │   ├── ISSUE_TEMPLATE/   # 问题模板
+│   ├── CODEOWNERS        # 代码拥有者定义
+│   ├── dependabot.yml    # 依赖项自动更新配置
+│   ├── labeler.yml       # 自动标签配置
 │   └── ...              # 其他 GitHub 配置
+├── .dockerignore         # Docker 忽略文件
+├── .gitignore           # Git 忽略文件
 ├── go.mod               # Go 模块定义
 ├── Makefile            # 构建自动化
 └── README.md           # 此文件
@@ -39,7 +44,7 @@
 
 ### 先决条件
 
-- Go 1.23.0 或更高版本
+- Go 1.23.0 或更高版本（当前支持到 Go 1.24.3）
 - Make（用于使用 Makefile 命令）
 - Docker（可选，用于容器化）
 
@@ -126,7 +131,9 @@ make build-all         # 为所有平台构建
 make clean             # 移除构建产物
 make fmt               # 格式化 Go 代码
 make test              # 运行测试
+make test-verbose      # 运行详细测试
 make run               # 构建并运行应用程序
+make install           # 安装二进制文件到系统（/usr/local/bin）
 ```
 
 ## GitHub Actions 工作流程
@@ -138,11 +145,12 @@ make run               # 构建并运行应用程序
 - **`auto_labeler.yml`**：自动标记拉取请求
 - **`jira.yml`**：JIRA 集成用于问题跟踪
 - **`updater.yml`**：自动依赖项更新
+- **`secret_scan.yml`**：安全扫描工作流程
 
 ### 自定义工作流程
 
 1. **更新仓库引用**：
-   - 将 `gitea.mediatek.inc/IT-GAIA/go-template` 替换为您的仓库 URL
+   - 将示例仓库 URL 替换为您的实际仓库 URL
    - 如需要，更新 Docker 注册表 URL
 
 2. **配置密钥**：
