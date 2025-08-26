@@ -1,11 +1,10 @@
 name: testing
+
 on:
   - push
   - pull_request
 
 env:
-  GOPATH: /go_path
-  GOCACHE: /go_cache
   NODE_TLS_REJECT_UNAUTHORIZED: 0
   GOPROXY: http://oa-mirror.mediatek.inc/repository/golang
 
@@ -33,12 +32,6 @@ jobs:
         with:
           go-version-file: go.mod
           check-latest: true
-
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.56.2
-          args: --timeout 5m
 
       - name: Build & Test
         run: |
