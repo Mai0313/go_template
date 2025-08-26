@@ -59,40 +59,6 @@ build_darwin_arm64:
 	GOOS=darwin GOARCH=arm64 $(GO) build -o $(BUILD_DIR)/$(BIN_NAME)-darwin-arm64 ./cmd/app
 	GOOS=darwin GOARCH=arm64 $(GO) build -o $(BUILD_DIR)/$(CLI_NAME)-darwin-arm64 ./cmd/cli
 
-# Packaging to Go-Template-{platform}.zip
-.PHONY: package-all package_linux_amd64 package_linux_arm64 package_windows_amd64 package_windows_arm64 package_darwin_amd64 package_darwin_arm64
-package-all: build-all package_linux_amd64 package_linux_arm64 package_windows_amd64 package_windows_arm64 package_darwin_amd64 package_darwin_arm64
-
-package_linux_amd64: build_linux_amd64
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cp ../README*.md . && \
-	  zip -q -9 -r "Go-Template-linux-amd64.zip" $(BIN_NAME)-linux-amd64 $(CLI_NAME)-linux-amd64 README*.md && rm -f README*.md
-
-package_linux_arm64: build_linux_arm64
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cp ../README*.md . && \
-	  zip -q -9 -r "Go-Template-linux-arm64.zip" $(BIN_NAME)-linux-arm64 $(CLI_NAME)-linux-arm64 README*.md && rm -f README*.md
-
-package_windows_amd64: build_windows_amd64
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cp ../README*.md . && \
-	  zip -q -9 -r "Go-Template-windows-amd64.zip" $(BIN_NAME)-windows-amd64.exe $(CLI_NAME)-windows-amd64.exe README*.md && rm -f README*.md
-
-package_windows_arm64: build_windows_arm64
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cp ../README*.md . && \
-	  zip -q -9 -r "Go-Template-windows-arm64.zip" $(BIN_NAME)-windows-arm64.exe $(CLI_NAME)-windows-arm64.exe README*.md && rm -f README*.md
-
-package_darwin_amd64: build_darwin_amd64
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cp ../README*.md . && \
-	  zip -q -9 -r "Go-Template-darwin-amd64.zip" $(BIN_NAME)-darwin-amd64 $(CLI_NAME)-darwin-amd64 README*.md && rm -f README*.md
-
-package_darwin_arm64: build_darwin_arm64
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cp ../README*.md . && \
-	  zip -q -9 -r "Go-Template-darwin-arm64.zip" $(BIN_NAME)-darwin-arm64 $(CLI_NAME)-darwin-arm64 README*.md && rm -f README*.md
-
 # Clean build artifacts
 .PHONY: clean
 clean: ## Remove build artifacts

@@ -81,11 +81,6 @@ make build_darwin_arm64
 make build-all
 ```
 
-#### 创建分发包：
-```bash
-make package-all
-```
-
 ### 运行
 
 #### 运行主应用程序：
@@ -128,7 +123,6 @@ make run
 make help              # 显示可用命令
 make all               # 本地构建所有命令
 make build-all         # 为所有平台构建
-make package-all       # 创建分发包
 make clean             # 移除构建产物
 make fmt               # 格式化 Go 代码
 make test              # 运行测试

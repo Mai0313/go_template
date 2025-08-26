@@ -81,11 +81,6 @@ make build_darwin_arm64
 make build-all
 ```
 
-#### 創建分發包：
-```bash
-make package-all
-```
-
 ### 運行
 
 #### 運行主應用程式：
@@ -128,7 +123,6 @@ make run
 make help              # 顯示可用命令
 make all               # 本地構建所有命令
 make build-all         # 為所有平台構建
-make package-all       # 創建分發包
 make clean             # 移除構建產物
 make fmt               # 格式化 Go 程式碼
 make test              # 運行測試

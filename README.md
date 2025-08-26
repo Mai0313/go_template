@@ -81,11 +81,6 @@ make build_darwin_arm64
 make build-all
 ```
 
-#### Create distribution packages:
-```bash
-make package-all
-```
-
 ### Running
 
 #### Run the main application:
@@ -128,7 +123,6 @@ make run
 make help              # Show available commands
 make all               # Build all commands locally
 make build-all         # Build for all platforms
-make package-all       # Create distribution packages
 make clean             # Remove build artifacts
 make fmt               # Format Go code
 make test              # Run tests
