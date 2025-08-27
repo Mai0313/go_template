@@ -1,8 +1,14 @@
 name: testing
 
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
 
 env:
   NODE_TLS_REJECT_UNAUTHORIZED: 0
@@ -33,7 +39,28 @@ jobs:
           go-version-file: go.mod
           check-latest: true
 
-      - name: Build & Test
+      - name: Test
         run: |
-          make
           make test
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: |
+            .github/reports/coverage.out
+            .github/reports/coverage.html
+            .github/reports/test-results.xml
+
+      - name: Coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
+        with:
+          pytest-coverage-path: ./.github/reports/coverage.html
+          junitxml-path: ./.github/reports/test-results.xml
+          # Note: There is a known issue possibly due to API differences between Gitea and GitHub
+          # report-only-changed-files: true
+          title: Coverage
+          remove-link-from-badge: true
+          junitxml-title: Coverage Summary 👮

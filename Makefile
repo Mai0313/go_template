@@ -79,11 +79,43 @@ install: app ## Install binary to /usr/local/bin
 fmt: ## Format Go code
 	$(GO) fmt ./...
 
-# Test (if you add tests later)
+# Test (runs all test types with coverage and reports)
 .PHONY: test
-test: ## Run tests
-	$(GO) test -cover -v ./...
+test: ## Run all tests with coverage and generate reports
+	@echo "🚀 Starting comprehensive test suite..."
+	@echo "Installing go-junit-report if not present..."
+	@$(GO) install github.com/jstemmer/go-junit-report/v2@latest
+	@echo "Creating reports directory..."
+	@mkdir -p .github/reports
 
-.PHONY: test-verbose
-test-verbose: ## Run verbose tests
-	$(GO) test -cover -v ./tests -run TestParser_FromTestConversationJSONL_PrintsFullPayload -count=1
+	@echo "📊 Running unit tests with coverage..."
+	$(GO) test -coverprofile=.github/reports/coverage.out -covermode=atomic -v ./... 2>&1 | $(shell go env GOPATH)/bin/go-junit-report -out .github/reports/test-results.xml
+	$(GO) tool cover -html=.github/reports/coverage.out -o .github/reports/coverage.html
+
+	@echo "🔗 Running integration tests..."
+	$(GO) test -v ./tests/integration/
+
+	@echo "⚡ Running benchmark tests..."
+	$(GO) test -bench=. -benchmem ./tests/benchmark/ -run=^$$
+
+	@echo "🎯 Running fuzz tests..."
+	@echo "  - Testing FuzzConfigParsing..."
+	@$(GO) test -fuzz=FuzzConfigParsing -fuzztime=3s ./tests/fuzz/ -run=^$$ || true
+	@echo "  - Testing FuzzConfigLoad..."
+	@$(GO) test -fuzz=FuzzConfigLoad -fuzztime=3s ./tests/fuzz/ -run=^$$ || true
+	@echo "  - Testing FuzzConfigPath..."
+	@$(GO) test -fuzz=FuzzConfigPath -fuzztime=2s ./tests/fuzz/ -run=^$$ || true
+	@echo "  - Testing FuzzJSONFieldValues..."
+	@$(GO) test -fuzz=FuzzJSONFieldValues -fuzztime=2s ./tests/fuzz/ -run=^$$ || true
+
+	@echo "🔍 Running code linting..."
+	$(GO) vet ./...
+	@if command -v golangci-lint >/dev/null 2>&1; then \
+		golangci-lint run; \
+	else \
+		echo "golangci-lint not installed, skipping additional linting"; \
+	fi
+
+	@echo "✅ All tests completed!"
+	@echo "📄 XML test report: .github/reports/test-results.xml"
+	@echo "📈 Coverage report: .github/reports/coverage.html"

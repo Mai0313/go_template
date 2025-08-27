@@ -15,9 +15,16 @@
 │   └── cli/               # CLI 工具
 ├── core/                  # 核心業務邏輯
 │   └── config/           # 配置管理
+├── tests/                 # 測試套件
+│   ├── integration/      # 整合測試
+│   ├── benchmark/        # 效能基準測試
+│   └── fuzz/             # 模糊測試
+├── internal/              # 私有應用程式程式碼
+│   └── testutil/         # 測試工具和輔助函數
 ├── docker/               # Docker 配置
 ├── .github/              # GitHub Actions 工作流程
 │   ├── workflows/        # CI/CD 管道
+│   ├── reports/          # 測試報告和覆蓋率
 │   ├── ISSUE_TEMPLATE/   # 問題模板
 │   ├── CODEOWNERS        # 程式碼擁有者定義
 │   ├── dependabot.yml    # 依賴項自動更新配置
@@ -39,6 +46,8 @@
 - ✅ **配置管理**：靈活的配置系統，支援環境變數
 - ✅ **Makefile 自動化**：簡單的構建、測試和打包命令
 - ✅ **多語言 README**：英文、繁體中文、簡體中文
+- ✅ **全面的測試套件**：單元測試、整合測試、基準測試和模糊測試
+- ✅ **測試自動化**：具有覆蓋率報告和 CI/CD 整合的自動化測試
 
 ## 快速開始
 
@@ -122,6 +131,48 @@ make run
    - 為您的應用程式需求自定義 `docker/Dockerfile`
    - 在 GitHub Actions 中更新 Docker 映像名稱
 
+## 測試
+
+此模板包含全面的測試框架，具有多種測試類型以確保程式碼品質和可靠性。
+
+### 測試架構
+
+專案包含四種類型的測試：
+
+1. **單元測試** (`core/config/`, `cmd/app/`, `cmd/cli/`):
+   - 獨立測試單個函數和元件
+   - 21 個測試覆蓋配置管理、主應用程式邏輯和 CLI 功能
+   - 使用 testify 框架進行斷言和測試工具
+
+2. **整合測試** (`tests/integration/`):
+   - 測試完整工作流程和元件互動
+   - 8 個測試覆蓋使用真實二進制檔案的端到端場景
+   - 驗證跨元件功能
+
+3. **基準測試** (`tests/benchmark/`):
+   - 效能測試和記憶體分析
+   - 10 個基準函數測量執行時間和記憶體使用
+   - 幫助識別效能瓶頸
+
+4. **模糊測試** (`tests/fuzz/`):
+   - 使用隨機輸入進行自動化測試以發現邊緣情況
+   - 4 個模糊函數針對 JSON 解析和配置處理
+   - 幫助提高程式碼健壯性
+
+### 測試報告和覆蓋率
+
+所有測試輸出都組織在 `.github/reports/` 中：
+- `test-results.xml`: 用於 CI/CD 整合的 JUnit 格式 XML 測試報告
+- `coverage.out`: 用於分析的原始覆蓋率資料
+- `coverage.html`: 具有逐行分析的視覺化覆蓋率報告
+
+### 測試依賴
+
+測試框架使用：
+- **testify/v1.9.0**: 斷言和測試工具
+- **go-junit-report/v2**: JUnit 格式的 XML 報告生成
+- **內建 Go 工具**: 覆蓋率分析和基準測試
+
 ### 可用的 Make 命令
 
 ```bash
@@ -130,11 +181,20 @@ make all               # 本地構建所有命令
 make build-all         # 為所有平台構建
 make clean             # 移除構建產物
 make fmt               # 格式化 Go 程式碼
-make test              # 運行測試
-make test-verbose      # 運行詳細測試
+make test              # 運行全面的測試套件（單元測試、整合測試、基準測試、模糊測試 + 覆蓋率 + 程式碼檢查）
 make run               # 構建並運行應用程式
 make install           # 安裝二進制檔案到系統（/usr/local/bin）
 ```
+
+`make test` 命令自動執行：
+- 🧪 運行所有單元測試並進行覆蓋率分析
+- 🔗 執行整合測試
+- ⚡ 進行基準測試
+- 🎯 執行模糊測試以發現邊緣情況
+- 🔍 運行程式碼檢查和靜態分析
+- 📊 生成 XML 測試報告（JUnit 格式）
+- 📈 創建視覺化覆蓋率報告
+- 📁 將所有輸出儲存到 `.github/reports/`
 
 ## GitHub Actions 工作流程
 
