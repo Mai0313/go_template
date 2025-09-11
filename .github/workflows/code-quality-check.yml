@@ -14,14 +14,10 @@ permissions: write-all
 jobs:
   code-quality-check:
     runs-on: ubuntu-latest
-    # container: catthehacker/ubuntu:act-20.04  # Uncomment it if you use it on Gitea
 
     steps:
       - name: Disable SSL Verify
         run: git config --global http.sslVerify false
-
-      # - name: Setup MTK Certification
-      #   uses: https://gitea.mediatek.inc/actions/mtk-cert-action@v1.2.0
 
       - name: Checkout
         uses: actions/checkout@v5
@@ -29,13 +25,14 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v6
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          version: "latest"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          go-version-file: go.mod
+          check-latest: true
 
-      - name: Run pre-commits
-        run: |
-          uv tool install pre-commit
-          uv tool run pre-commit run -a
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --out-format=colored-line-number ./...
