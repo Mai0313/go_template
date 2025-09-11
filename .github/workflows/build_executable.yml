@@ -1,0 +1,104 @@
+name: Build Executable File
+
+on:
+  push:
+    tags:
+      - v*
+
+permissions: write-all
+
+jobs:
+  build_executable:
+    name: Build Executable File
+    runs-on: windows-latest
+
+    steps:
+      - name: Disable SSL Verify
+        run: git config --global http.sslVerify false
+
+      # - name: Setup MTK Certification
+      #   uses: https://gitea.mediatek.inc/actions/mtk-cert-action@v1.2.0
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the version
+        id: version
+        shell: pwsh
+        run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          $env:PYTHONUTF8 = "1"
+          $VERSION = (uvx dunamai from git --bump --no-metadata --style pep440)
+          uv version $VERSION
+          echo "Version: $VERSION"
+          echo "VERSION=$VERSION" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+          echo "version=$VERSION" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      # - name: Setup uv
+      #   uses: astral-sh/setup-uv@v6
+      #   with:
+      #     version: "latest"
+      #     python-version: "3.10"
+      #     pyproject-file: "pyproject.toml"
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Install dependencies
+      #   run: |
+      #     uv sync
+
+      # - name: Packaging to Executable file
+      #   run: |
+      #     uv pip install pyinstaller
+      #     pyinstaller -F main.py --onefile -n ${{ github.event.repository.name }}
+
+      - name: Move and Rename
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "./dist" -ErrorAction SilentlyContinue
+          Copy-Item -Path "./dist/*" -Destination "./" -Recurse -Force
+          Remove-Item -Recurse -Force build, dist, .venv, .cache, .git -ErrorAction SilentlyContinue
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          path: ./*
+          name: ${{ github.event.repository.name }}_${{ steps.version.outputs.version }}
+          if-no-files-found: ignore
+          retention-days: 7
+          compression-level: 6
+          overwrite: true
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}_${{ steps.version.outputs.version }}
+          path: ${{ github.event.repository.name }}_${{ steps.version.outputs.version }}
+
+      - name: Check Files
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "${{ github.event.repository.name }}_${{ steps.version.outputs.version }}" -DestinationPath "${{ github.event.repository.name }}_${{ steps.version.outputs.version }}.zip" -Force
+          ls -Force
+
+      - name: Upload Release Assets
+        if: ${{ contains(github.server_url, 'github') }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |-
+            ${{ github.event.repository.name }}_${{ steps.version.outputs.version }}.zip
+
+      - name: Upload Release Assets
+        if: ${{ contains(github.server_url, 'gitea') }}
+        uses: akkuman/gitea-release-action@v1
+        with:
+          files: |-
+            ${{ github.event.repository.name }}_${{ steps.version.outputs.version }}.zip
