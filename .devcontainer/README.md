@@ -1,34 +1,31 @@
-# Dev Container for Python Project
+# Dev Container for Go Project
 
-This directory contains configuration files for developing this project in a fully reproducible environment using [VS Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers).
+This directory hosts configuration for a reproducible Go development environment using [VS Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers).
 
 ## What's Included?
 
-- **Dockerfile**: Builds an image based on Python 3.10 + Node.js 20, with zsh, oh-my-zsh, powerlevel10k, and useful plugins/fonts for a modern terminal experience.
-- **devcontainer.json**: VS Code configuration for the container, including:
-    - Recommended extensions for Python, Jupyter, Docker, TOML, YAML, Git, and more.
-    - Custom mounts for your local `.gitconfig`, `.ssh`, and `.p10k.zsh`.
-    - Automatic dependency sync with `uv` on container start.
+- **Dockerfile**: Go 1.x base image with zsh, oh-my-zsh, powerlevel10k, fonts, and common shell plugins.
+- **devcontainer.json**: VS Code settings and extension recommendations (`golang.go`, Docker, YAML, TOML, etc.).
+- Mounts for your `.gitconfig`, `.ssh`, and `.p10k.zsh`.
 
 ## Usage
 
-1. **Open this folder in VS Code** (with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installed).
-2. **Reopen in Container** when prompted, or use the command palette: `Dev Containers: Reopen in Container`.
-3. The environment will be built and all dependencies installed automatically.
+1. Open this folder in VS Code with the Dev Containers extension installed.
+2. Run “Dev Containers: Reopen in Container”.
+3. On start, the container verifies `go version` and you're ready to `make build` / `make test`.
 
 ## Customization
 
-- **Add Python/Node packages**: Edit the Dockerfile to install system or global packages as needed.
-- **Change Python version**: Adjust the `PYTHON_VERSION` build argument in the Dockerfile.
-- **Add VS Code extensions**: Update the `extensions` list in `devcontainer.json`.
-- **Mount more files**: Add to the `mounts` array in `devcontainer.json`.
+- Add system packages in the Dockerfile as needed.
+- Add VS Code extensions in `devcontainer.json`.
+- Mount more files by editing the `mounts` array.
 
 ## Useful Commands
 
-- **Rebuild container**: Use `Dev Containers: Rebuild Container` from the command palette after changing Dockerfile or devcontainer.json.
-- **Update dependencies**: The container runs `uv sync && uv cache clean` on start.
+- Rebuild container after Dockerfile changes: “Dev Containers: Rebuild Container”.
+- Inside the container: `make build`, `make test`, `go mod tidy`.
 
 ## Troubleshooting
 
-- If you have issues with SSH or Git, ensure your local files are correctly mounted.
-- For more info, see the [VS Code Dev Containers documentation](https://code.visualstudio.com/docs/devcontainers/containers).
+- If SSH or Git behave unexpectedly, ensure your local files are mounted as configured.
+- See the [VS Code Dev Containers docs](https://code.visualstudio.com/docs/devcontainers/containers) for more details.

@@ -1,284 +1,89 @@
 <center>
 
-# Python 專案模板
+# Go 專案模板
 
-[![PyPI version](https://img.shields.io/pypi/v/swebenchv2.svg)](https://pypi.org/project/swebenchv2/)
-[![python](https://img.shields.io/badge/-Python_%7C_3.10%7C_3.11%7C_3.12%7C_3.13-blue?logo=python&logoColor=white)](https://www.python.org/downloads/source/)
-[![uv](https://img.shields.io/badge/-uv_dependency_management-2C5F2D?logo=python&logoColor=white)](https://docs.astral.sh/uv/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://docs.pydantic.dev/latest/contributing/#badges)
-[![tests](https://github.com/Mai0313/repo_template/actions/workflows/test.yml/badge.svg)](https://github.com/Mai0313/repo_template/actions/workflows/test.yml)
-[![code-quality](https://github.com/Mai0313/repo_template/actions/workflows/code-quality-check.yml/badge.svg)](https://github.com/Mai0313/repo_template/actions/workflows/code-quality-check.yml)
-[![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/Mai0313/repo_template/tree/master?tab=License-1-ov-file)
-[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Mai0313/repo_template/pulls)
-[![contributors](https://img.shields.io/github/contributors/Mai0313/repo_template.svg)](https://github.com/Mai0313/repo_template/graphs/contributors)
+[![Go](https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go&logoColor=white)](https://go.dev/dl/)
+[![tests](https://github.com/Mai0313/go_template/actions/workflows/test.yml/badge.svg)](.github/workflows/test.yml)
+[![lint](https://github.com/Mai0313/go_template/actions/workflows/code-quality-check.yml/badge.svg)](.github/workflows/code-quality-check.yml)
+[![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](LICENSE)
+[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](../../pulls)
 
 </center>
 
-🚀 幫助 Python 開發者「快速建立新專案」的模板。內建現代化套件管理、工具鏈、Docker 與完整 CI/CD 工作流程。
+🚀 幫助 Golang 開發者「快速建立新專案」的模板。提供務實的專案結構、Makefile、Docker 多階段建置，以及完整的 GitHub Actions 工作流程。
 
-點擊 [使用此模板](https://github.com/Mai0313/repo_template/generate) 後即可開始。
+點擊 [使用此模板](../../generate) 後即可開始。
 
 其他語言: [English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md)
 
 ## ✨ 重點特色
 
-- 現代 `src/` 佈局 + 全面型別註解
-- `uv` 超快依賴管理
-- pre-commit 套件鏈：ruff、mdformat（含多插件）、codespell、nbstripout、mypy、uv hooks
-- 型別嚴謹：mypy + Pydantic 外掛設定
-- pytest + coverage + xdist；PR 覆蓋率摘要留言
-    - 覆蓋率門檻 80%，HTML/XML 報告輸出至 `.github/`
-- MkDocs Material + mkdocstrings（繼承圖）、markdown-exec、MathJax
-    - 開發伺服器 `0.0.0.0:9987`；雙語文件腳手架
-- 文件生成腳本：支援 class/檔案兩種模式、可選執行 notebook、可併發、保留目錄結構
-    - 使用 anyio 非同步處理與 rich 進度條
-- 打包：`uv build`、git-cliff 產 changelog
-- CI 自動版本：以 `dunamai` 從 git 產 PEP 440 版本
-- Dockerfile 多階段（內含 uv/uvx 與 Node.js）；Compose 服務（Redis/Postgres/Mongo/MySQL）含 healthcheck 與 volume
-- GitHub Actions：測試、品質、文件部署、套件打包、Docker 推送（GHCR + buildx cache）、Release Drafter、自動標籤、祕密掃描、語義化 PR、pre-commit 自動更新
-    - pre-commit 同時掛載多個 git 階段（pre-commit、post-checkout、post-merge、post-rewrite）
-    - i18n 友善檢查（允許中文標點等 confusables）
-    - 文件列出可替代的環境管理（Rye、Conda）
-    - 相容舊式流程：可用 `uv pip` 匯出 `requirements.txt`
+- Makefile 工作流：build、test、跨平台編譯、fmt、dead‑code 掃描
+- 內建版本資訊：以 `-ldflags` 注入 version、build time、git commit
+- 範例 CLI：`cmd/go-template`，支援 `--version`
+- 單元測試與 CI 覆蓋率報告產物
+- Docker：多階段建置，最小化執行環境
+- GitHub Actions：測試、靜態檢查（golangci‑lint）、映像建置/推送、Release Drafter、標籤、自動秘密/程式碼掃描
 
 ## 🚀 快速開始
 
 需求：
 
-- Python 3.10–3.13
-- `uv`（可用 `make uv-install` 安裝）
-- pre-commit hooks：`uv tool install pre-commit` 或 `uv sync --group dev`
+- Go 1.24+
+- Docker（可選，用於容器化建置）
 
-本機安裝：
+本機開發：
 
 ```bash
-make uv-install
-uv sync                     # 安裝基礎依賴
-uv tool install pre-commit  # 或：uv sync --group dev
-make format
-make test
+make build            # 編譯到 ./build/
+make run              # 編譯並執行主程式
+make test             # 執行測試並輸出覆蓋率
+make fmt              # go fmt ./...
+make build-all        # 跨平台編譯常見 OS/ARCH
 ```
 
 執行範例 CLI：
 
 ```bash
-uv run repo_template
+./build/go-template --version
 ```
 
-作為模板使用（推薦）：
+作為模板使用：
 
-1. 點擊「使用此模板」建立新倉庫
-2. 全域替換名稱：
+1. 點擊「使用此模板」建立你的倉庫
+2. 視需求修改 `go.mod` 的 module 名稱
+3. 若要更換二進位名稱，請調整 `cmd/` 目錄結構
+
+## 專案結構
+
+```text
+cmd/go-template/     # 主 CLI 入口
+core/version/        # 版本工具與測試
+build/               # 編譯輸出（已加入 .gitignore）
+docker/Dockerfile    # 多階段映像建置
+```
+
+## Docker
 
 ```bash
-# 套件/模組名稱
-find . -type f -name "*.py" -o -name "*.md" -o -name "*.toml" | xargs sed -i 's/repo_template/your_package_name/g'
-
-# 專案顯示標題
-find . -type f -name "*.py" -o -name "*.md" -o -name "*.toml" | xargs sed -i 's/RepoTemplate/YourProjectTitle/g'
+# 本地建置與執行
+docker build -t your/image:dev -f docker/Dockerfile .
+docker run --rm -it your/image:dev
 ```
 
-1. 更新 `pyproject.toml` 中的作者/描述等中繼資料
+## CI/CD（GitHub Actions）
 
-## 🧰 指令一覽
+- 測試：`.github/workflows/test.yml`
+- 品質：`.github/workflows/code-quality-check.yml`
+- 釋出打包：`.github/workflows/build_release.yml`
+- Docker 映像：`.github/workflows/build_image.yml`
+- 釋出草稿：`.github/workflows/release_drafter.yml`
+- 標籤與語義化：`.github/workflows/auto_labeler.yml`, `semantic-pull-request.yml`
+- 安全性：`.github/workflows/code_scan.yml`（gitleaks、trivy、codeql）
 
-```bash
-# 開發
-make help               # 顯示 Makefile 指令列表
-make clean              # 清理快取、產物與產生的文件
-make format             # 執行所有 pre-commit hooks
-make test               # 執行 pytest
-make gen-docs           # 從 src/ 與 scripts/ 生成文件
+## 貢獻指南
 
-# Git 子模組（如有使用）
-make submodule-init     # 初始化與更新所有子模組
-make submodule-update   # 更新所有子模組至遠端
+- 提交前請執行 `make fmt && make test`
+- PR 請聚焦單一變更並附上測試
+- 使用 Conventional Commits 作為提交訊息
 
-# 依賴管理（uv）
-make uv-install         # 安裝 uv
-uv add <pkg>            # 加入正式依賴
-uv add <pkg> --dev      # 加入開發依賴
-# 同步選用依賴群組
-uv sync --group dev     # 安裝開發用依賴（pre-commit、poe、notebook）
-uv sync --group test    # 安裝測試用依賴
-uv sync --group docs    # 安裝文件用依賴
-```
-
-## 📚 文件系統
-
-- 使用 MkDocs Material
-- 生成與預覽：
-
-```bash
-uv sync --group docs
-make gen-docs
-uv run mkdocs serve    # http://localhost:9987
-```
-
-- 自動生成腳本：`scripts/gen_docs.py`（支援 .py 與 .ipynb）
-
-```bash
-# 以 class 為單位（預設）
-uv run python ./scripts/gen_docs.py --source ./src --output ./docs/Reference gen_docs
-
-# 以檔案為單位
-uv run python ./scripts/gen_docs.py --source ./src --output ./docs/Reference --mode file gen_docs
-```
-
-## 🐳 Docker 與本機服務
-
-`docker-compose.yaml` 內提供本機開發常見服務：`redis`、`postgresql`、`mongodb`、`mysql`，以及示範 `app` 服務（執行 CLI）。
-
-建立 `.env` 設定連線參數（預設如下）：
-
-```bash
-REDIS_PORT=6379
-POSTGRES_DB=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_PORT=5432
-MONGO_PORT=27017
-MYSQL_ROOT_PASSWORD=root
-MYSQL_DATABASE=mysql
-MYSQL_USER=mysql
-MYSQL_PASSWORD=mysql
-MYSQL_PORT=3306
-```
-
-啟動服務：
-
-```bash
-docker compose up -d redis postgresql mongodb mysql
-
-# 或啟動示範 app
-docker compose up -d app
-```
-
-## 📦 打包與發佈
-
-以 uv 產出套件（wheel/sdist 會放在 `dist/`）：
-
-```bash
-uv build
-```
-
-發佈到 PyPI（需設定 `UV_PUBLISH_TOKEN`）：
-
-```bash
-UV_PUBLISH_TOKEN=... uv publish
-```
-
-CI 亦會在建立 `v*` 標籤時自動打包並上傳產物。若要自動發布到 PyPI，請在 `build_package.yml` 取消註解 publish 步驟並設定 secret。
-
-### 在本機與 PyPI 執行你的 CLI
-
-- 本機（來源碼倉）：
-
-```bash
-uv run repo_template
-uv run cli
-```
-
-- 發佈到 PyPI 後，透過 `uvx`（臨時安裝後執行）：
-
-```bash
-# 若 console script 名稱為 "repo_template"
-uvx repo_template
-
-# 或指定套件/版本與入口名稱
-uvx --from your-package-name==0.1.0 your-entrypoint
-```
-
-## 🧭 選用任務管理（Poe the Poet）
-
-`pyproject.toml` 中的 `[tool.poe.tasks]` 定義了便捷任務，安裝 dev 群組（`uv sync --group dev`）或使用 `uvx` 後可用：
-
-```bash
-uv run poe docs        # 生成 + 啟動文件預覽（需 dev 群組）
-uv run poe gen         # 生成 + 發佈文件（gh-deploy）（需 dev 群組）
-uv run poe main        # 執行 CLI（等同 uv run repo_template）
-
-# 或使用 uvx（臨時環境，無需本地安裝）
-uvx poe docs
-```
-
-## 🔁 CI/CD 工作流程總覽
-
-所有流程位於 `.github/workflows/`，以下為觸發時機與用途：
-
-- Tests（`test.yml`）
-
-    - 觸發：對 `master`、`release/*` 的 PR
-    - 執行 pytest（3.10/3.11/3.12/3.13）並留下覆蓋率摘要
-
-- Code Quality（`code-quality-check.yml`）
-
-    - 觸發：PR
-    - 執行 ruff 與其它 pre-commit hooks
-
-- Docs Deploy（`deploy.yml`）
-
-    - 觸發：推送到 `master` 與 `v*` 標籤
-    - 建置並發布 MkDocs 網站到 GitHub Pages
-    - 需在 GitHub 啟用 Pages（Actions → Pages）
-
-- Build Package（`build_package.yml`）
-
-    - 觸發：`v*` 標籤
-    - 以 `uv build` 打包並上傳產物，並更新變更日誌
-    - 發布到 PyPI：取消註解 `uv publish` 並新增 `UV_PUBLISH_TOKEN` secret
-
-- Publish Docker Image（`build_image.yml`）
-
-    - 觸發：推送到 `master` 與 `v*` 標籤
-    - 發佈至 GHCR：`ghcr.io/<owner>/<repo>`（需 `docker/Dockerfile` 內有 `prod` target）
-
-- Build Executable（`build_executable.yml`）
-
-    - 觸發：`v*` 標籤（Windows runner）
-    - 範例流程（目前示範，請自行加入打包步驟）
-
-- Release Drafter（`release_drafter.yml`）
-
-    - 觸發：推送到 `main`/`master` 與 PR 事件
-    - 基於 Conventional Commits 維護草稿發佈
-
-- PR Labeler（`auto_labeler.yml`）
-
-    - 觸發：PR 與 Push
-    - 依 `.github/labeler.yml` 自動加標籤
-
-- Secret Scanning（`secret_scan.yml`）
-
-    - 觸發：Push 與 PR
-    - 使用 gitleaks 掃描機密
-
-- Semantic Pull Request（`semantic-pull-request.yml`）
-
-    - 觸發：PR 開啟/更新
-    - 強制 PR 標題符合 Conventional Commits
-
-### CI/CD 設定清單
-
-- PR 標題遵循 Conventional Commits
-- （選用）發佈到 PyPI：新增 `UV_PUBLISH_TOKEN` secret
-- （選用）啟用 GitHub Pages 以發布文件
-
-## 🧩 範例 CLI
-
-`pyproject.toml` 內提供 `repo_template` 與 `cli` 兩個入口點。目前示範回傳簡單 `Response` 模型，可依需求替換。
-
-```bash
-uv run repo_template
-```
-
-## 🤝 貢獻
-
-- 歡迎 Issue/PR
-- 請遵循程式風格（ruff、型別）
-- PR 標題遵循 Conventional Commits
-
-## 📄 授權
-
-MIT — 詳見 `LICENSE`。

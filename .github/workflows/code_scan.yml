@@ -58,6 +58,8 @@ jobs:
 
       - name: CodeQL Initialize
         uses: github/codeql-action/init@v3.29.11
+        with:
+          languages: go
 
       - name: CodeQL Analyze
         uses: github/codeql-action/analyze@v3.29.11

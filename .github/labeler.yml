@@ -1,6 +1,6 @@
 # 🏷️ Auto Labeler Configuration
 # 這個檔案會自動為 PR 添加標籤，基於分支名稱和檔案變更路徑
-# 設計來支援 Python 和 TypeScript 專案，與 release-drafter.yml 完全對應
+# 設計來支援 Golang 專案（亦相容部分前端檔案），與 release-drafter.yml 完全對應
 
 # 主要標籤會被 release-drafter.yml 用於：
 # 1. 自動分類到對應的 changelog 區段
@@ -26,12 +26,10 @@ feature:
       - "^add/.*"
   - changed-files:
       - any-glob-to-any-file:
-          - "src/**/*.py"
-          - "src/**/*.ts"
-          - "src/**/*.js"
-          - "lib/**/*.py"
-          - "lib/**/*.ts"
-          - "lib/**/*.js"
+          - "**/*.go"
+          - "cmd/**"
+          - "internal/**"
+          - "pkg/**"
 
 # 🐛 Bug Fixes
 bugfix:
@@ -51,10 +49,11 @@ chore:
   - changed-files:
       - any-glob-to-any-file:
           - ".github/**"
-          - ".pre-commit-config.yaml"
-          - "pyproject.toml"
-          - "setup.py"
+          - ".golangci.yml"
+          - "go.mod"
+          - "go.sum"
           - "Makefile"
+          - ".editorconfig"
 
 # 📦 Dependencies
 dependencies:
@@ -65,13 +64,10 @@ dependencies:
       - "^dependabot/.*"
   - changed-files:
       - any-glob-to-any-file:
-          - "requirements*.txt"
-          - "pyproject.toml"
-          - "setup.py"
-          - "setup.cfg"
-          - "Pipfile*"
-          - "poetry.lock"
-          - "uv.lock"
+          - "go.mod"
+          - "go.sum"
+          - "docker/**/Dockerfile"
+          - ".devcontainer/**"
           - "package.json"
           - "package-lock.json"
           - "yarn.lock"
@@ -102,22 +98,9 @@ unit-test:
       - "^tests/.*"
   - changed-files:
       - any-glob-to-any-file:
-          - "tests/**/*.py"
-          - "test/**/*.py"
-          - "**/test_*.py"
-          - "**/*_test.py"
-          - "**/*test*.py"
-          - "**/*spec*.py"
-          - "tests/**/*.ts"
-          - "test/**/*.ts"
-          - "**/*.test.ts"
-          - "**/*.spec.ts"
-          - "**/*.test.js"
-          - "**/*.spec.js"
+          - "**/*_test.go"
           - "jest.config.*"
           - "vitest.config.*"
-          - "pytest.ini"
-          - "conftest.py"
 
 # ⚡️ Performance Improvements
 perf:
@@ -163,15 +146,7 @@ style:
       - "^lint/.*"
   - changed-files:
       - any-glob-to-any-file:
-          - ".pre-commit-config.yaml"
-          - ".ruff.toml"
-          - "ruff.toml"
-          - ".black"
-          - ".flake8"
-          - ".isort.cfg"
-          - ".mypy.ini"
-          - "mypy.ini"
-          - ".pylintrc"
+          - ".golangci.yml"
           - ".eslintrc*"
           - ".prettier*"
           - "stylelint*"

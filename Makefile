@@ -29,6 +29,9 @@ CMDS := $(notdir $(wildcard cmd/*))
 .PHONY: all
 all: $(CMDS) ## Build all commands.
 
+.PHONY: build
+build: $(CMDS) ## Build default commands
+
 help: # Show this help message
 	@echo "Usage: make [target]"
 	@echo ""
@@ -77,16 +80,14 @@ clean: ## Remove build artifacts
 
 # Run the application (for testing)
 .PHONY: run
-run: ## Build and run the application
-	run: build
+run: build ## Build and run the application
 	./$(BUILD_DIR)/$(BIN_NAME)
 
 # ---
 
 # Install to system (optional)
 .PHONY: install
-install: ## Install binary to /usr/local/bin
-	install: build
+install: build ## Install binary to /usr/local/bin
 	sudo cp $(BUILD_DIR)/$(BIN_NAME) /usr/local/bin/$(BIN_NAME)
 
 # ---

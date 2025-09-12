@@ -4,118 +4,63 @@
 
 ### Project Background
 
-This repository is a Python project template intended to help developers bootstrap projects quickly. It ships with modern packaging, CLI entry points, docs generation, Docker/Compose, and a comprehensive CI/CD setup via GitHub Actions.
+This repository is a Golang project template to bootstrap services and CLIs quickly. It ships with a clean Go layout (`cmd/`, `core/`), Makefile tasks, Docker multi-stage builds, and a comprehensive GitHub Actions suite.
 
 ### Core Infrastructure
 
-- Python 3.10/3.11/3.12 supported
-- Dependency management: `uv`
-- Project layout: `src/` packaging
-- Dockerfile with multi-stage builds; `docker-compose.yaml` for local services
-- MkDocs Material documentation with mkdocstrings
+- Go 1.24+
+- `cmd/` for binaries, `core/` for shared packages
+- Makefile for build/test/cross-compile/format
+- Dockerfile (multi-stage) under `docker/`
 
 ### Local Development
 
-- Install deps: `make uv-install && uv sync`
-- Run quality hooks: `make format`
-- Run tests: `make test`
-- Generate docs: `make gen-docs`
-- Serve docs: `uv run mkdocs serve`
-
-Dependency groups:
-
-- `uv sync --group test` for test-only deps
-- `uv sync --group docs` for docs-only deps
+- Build: `make build` (outputs to `./build/`)
+- Run: `make run` or execute `./build/go-template`
+- Test: `make test` (produces `coverage.out`)
+- Format: `make fmt` (runs `go fmt ./...`)
+- Dead code checks: `make lint-deadcode`
 
 Make targets reference (from `Makefile`):
 
-- `make clean`: remove caches, artifacts and generated docs
-- `make format`: run pre-commit hooks (ruff etc.)
-- `make test`: run pytest
-- `make gen-docs`: generate docs for `src/` and `scripts/`
-- `make submodule-init|submodule-update`: submodule helpers (optional)
-- `make uv-install`: install `uv` on the system
+- `make clean` — remove build/test caches and artifacts
+- `make build-all` — cross-compile common OS/ARCH targets
 
-### CLI Entrypoints
+### CLI Entrypoint
 
-Defined in `pyproject.toml` under `[project.scripts]`:
-
-- `repo_template` and `cli` → `repo_template.cli:main`
-
-Example:
-
-```bash
-uv run repo_template
-uv run cli
-```
+Main binary lives at `cmd/go-template`. It supports `--version` which prints version, build time, git commit, and Go version injected via `-ldflags`.
 
 ### Coding Style
 
-- Use ruff with repo-configured rules (run via pre-commit or `make format`)
-- PEP 8 naming: snake_case (functions/variables), PascalCase (classes), UPPER_CASE (constants)
-- Prefer full type hints on public functions and datamodels
-- Use Pydantic models with `Field(..., description=...)` where appropriate
-- Tests in `tests/`, discoverable by `pytest`
+- Use standard Go formatting: `go fmt ./...`
+- Optional linting: `golangci-lint run` (action provided in CI)
+- Tests colocated with code as `*_test.go`
 
-### Type Hints and Docs
+### Dependencies
 
-- Type-annotate function parameters and returns
-- Prefer Google-style docstrings (configured in mkdocstrings)
-- Keep code/doc comments concise; English for docs
+- Managed via Go modules (`go.mod`, `go.sum`)
+- Tidy modules with `go mod tidy`
 
-### Dependencies (uv)
+### Docker
 
-- Prod: `uv add <package>`, `uv remove <package>`
-- Dev: `uv add <package> --dev`, `uv remove <package> --dev`
-
-Build and publish:
-
-```bash
-uv build                 # create wheel/sdist in dist/
-UV_PUBLISH_TOKEN=... uv publish   # publish to PyPI
-```
-
-### Documentation Generation
-
-- Script: `scripts/gen_docs.py` supports `.py` and `.ipynb`
-- Examples:
-
-```bash
-uv run python ./scripts/gen_docs.py --source ./src --output ./docs/Reference gen_docs
-uv run python ./scripts/gen_docs.py --source ./src --output ./docs/Reference --mode file gen_docs
-```
-
-### Docker/Compose
-
-- `docker-compose.yaml` provides optional `redis`, `postgresql`, `mongodb`, `mysql` services and an example `app` service
-- Configure via `.env` (see `README.md` for keys)
+- Multi-stage builder in `docker/Dockerfile`
+- Local build: `docker build -t your/image:dev -f docker/Dockerfile .`
 
 ### CI/CD Workflows (GitHub Actions)
 
 All workflows live in `.github/workflows/`:
 
-- `test.yml`: Run pytest on PRs to `master`/`release/*` (3.10/3.11/3.12)
-- `code-quality-check.yml`: Run pre-commit hooks on PRs
-- `deploy.yml`: Build and publish MkDocs site on pushes to `master` and tags `v*`
-- `build_package.yml`: Build wheel/sdist on tags `v*`, upload artifacts, generate changelog; optional PyPI publish with `UV_PUBLISH_TOKEN`
-- `build_image.yml`: Build and push Docker image to GHCR on `master` and tags `v*`
-- `build_executable.yml`: Example Windows packaging flow on tags `v*` (stub)
+- `test.yml`: Run `make test` with coverage and upload HTML artifact
+- `code-quality-check.yml`: Run `golangci-lint`
+- `build_release.yml`: Cross-compile on tags and upload release assets
+- `build_image.yml`: Build/push Docker image with buildx cache
 - `release_drafter.yml`: Maintain a draft release using Conventional Commits
 - `auto_labeler.yml`: Auto-apply labels based on `.github/labeler.yml`
-- `secret_scan.yml`: Run gitleaks on push/PR
+- `code_scan.yml`: Security scans (gitleaks, trivy) and CodeQL
 - `semantic-pull-request.yml`: Enforce Conventional Commit PR titles
 
 ### Conventions
 
-- Conventional Commit PR titles (enforced by workflow)
-- Prefer small, focused PRs with tests and docs
-- Update this file plus `README.md`, `README.zh-TW.md`, and `README.zh-CN.md` when workflows, commands, or usage changes
-
-### Running from PyPI via uvx
-
-After publishing your package, the CLI can be executed without prior install using `uvx`:
-
-```bash
-uvx repo_template
-uvx --from your-package-name==0.1.0 your-entrypoint
-```
+- Use Conventional Commit PR titles (enforced by workflow)
+- Keep PRs small and focused with tests
+- Update this file plus `README.md`, `README.zh-TW.md`, and `README.zh-CN.md` when commands or workflows change
