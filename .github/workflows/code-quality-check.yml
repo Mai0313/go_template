@@ -25,11 +25,22 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6.6.1
+        with:
+          version: "latest"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
           check-latest: true
+
+      - name: Run pre-commits
+        run: |
+          uv tool install pre-commit
+          uv tool run pre-commit run -a
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
