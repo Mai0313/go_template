@@ -1,4 +1,4 @@
-name: Build Package
+name: Build Release
 
 on:
   push:
@@ -32,14 +32,13 @@ jobs:
         run: |
           make build-all
 
-      - uses: release-drafter/release-drafter@v6
-        id: drafter
+      - name: Release Drafter
+        uses: release-drafter/release-drafter@v6.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          config-name: release-drafter.yml
           publish: false
-          disable-autolabeler: false
+          config-name: release-drafter.yml
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
