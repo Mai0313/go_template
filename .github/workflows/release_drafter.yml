@@ -33,10 +33,24 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Release Drafter
-        uses: release-drafter/release-drafter@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate a tag
+        uses: orhun/git-cliff-action@v4
+        id: git-cliff-tag
         with:
-          publish: false
-          config-name: release-drafter.yml
+          config: ./.github/cliff.toml
+          args: --bumped-version
+
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v4
+        id: git-cliff-changelog
+        with:
+          config: ./.github/cliff.toml
+          args: --bump --unreleased
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.git-cliff-tag.outputs.content }}
+          name: ${{ steps.git-cliff-tag.outputs.content }} 🌈
+          body: ${{ steps.git-cliff-changelog.outputs.content }}
+          draft: true
