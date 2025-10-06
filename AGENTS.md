@@ -1,1 +1,1 @@
-Please read `./.github/copilot-instructions.md` for instructions.
+Please read `./CLAUDE.md` for instructions.
