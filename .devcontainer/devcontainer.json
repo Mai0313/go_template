@@ -1,39 +1,39 @@
 {
-    "customizations":  {
-        "vscode": {
-            "extensions": [
-                "natqe.reload",
-                "eamodio.gitlens",
-                "redhat.vscode-yaml",
-                "ryu1kn.partial-diff",
-                "oderwat.indent-rainbow",
-                "cweijan.dbclient-jdbc",
-                "tamasfe.even-better-toml",
-                "cweijan.vscode-redis-client",
-                "github.copilot",
-                "github.copilot-chat",
-                "ms-azuretools.vscode-docker",
-                "ms-kubernetes-tools.vscode-kubernetes-tools",
-                "golang.Go"
-            ],
-            "settings": {
-                "terminal.integrated.profiles.linux": {
-                    "bash": {
-                        "path": "/bin/bash"
-                    },
-                    "zsh": {
-                        "path": "/usr/bin/zsh"
-                    }
-                },
-                "terminal.integrated.defaultProfile.linux": "zsh"
-            }
-        }
-    },
-    "dockerFile": "Dockerfile",
-    "updateContentCommand": "go version || true",
-    "mounts": [
-        "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached,ro",
-        "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached,ro",
-        "source=${localEnv:HOME}/.p10k.zsh,target=/root/.p10k.zsh,type=bind,consistency=cached,ro"
-    ]
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "natqe.reload",
+        "eamodio.gitlens",
+        "redhat.vscode-yaml",
+        "ryu1kn.partial-diff",
+        "oderwat.indent-rainbow",
+        "cweijan.dbclient-jdbc",
+        "tamasfe.even-better-toml",
+        "cweijan.vscode-redis-client",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "golang.Go"
+      ],
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          },
+          "zsh": {
+            "path": "/usr/bin/zsh"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      }
+    }
+  },
+  "dockerFile": "Dockerfile",
+  "updateContentCommand": "go version || true",
+  "mounts": [
+    "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached,ro",
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached,ro",
+    "source=${localEnv:HOME}/.p10k.zsh,target=/root/.p10k.zsh,type=bind,consistency=cached,ro"
+  ]
 }
