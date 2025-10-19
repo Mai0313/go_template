@@ -7,25 +7,25 @@
 version: 2
 updates:
   # Go modules
-  - package-ecosystem: gomod
-    directory: /
+  - package-ecosystem: "gomod"
+    directory: "/"
     schedule:
-      interval: weekly
+      interval: "daily"
 
   # Dockerfiles
-  - package-ecosystem: docker
-    directory: /
+  - package-ecosystem: "docker"
+    directory: "/"
     schedule:
-      interval: weekly
+      interval: "daily"
 
   # Devcontainers
-  - package-ecosystem: devcontainers
-    directory: /
+  - package-ecosystem: "devcontainers"
+    directory: "/"
     schedule:
-      interval: weekly
+      interval: "daily"
 
   # GitHub Actions
-  - package-ecosystem: github-actions
-    directory: /
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: weekly
+      interval: "daily"
