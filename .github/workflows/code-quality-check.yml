@@ -43,7 +43,7 @@ jobs:
           uv tool run pre-commit run -a
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
           version: latest
           args: --out-format=colored-line-number ./...
