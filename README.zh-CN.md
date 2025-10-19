@@ -1,4 +1,4 @@
-<center>
+<div align="center" markdown="1">
 
 # Go 项目模板
 
@@ -10,7 +10,7 @@
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Mai0313/go_template/pulls)
 [![contributors](https://img.shields.io/github/contributors/Mai0313/go_template.svg)](https://github.com/Mai0313/go_template/graphs/contributors)
 
-</center>
+</div>
 
 🚀 面向 Golang 的生产级项目模板，帮助你快速创建新的 Go 服务或 CLI。内置合理的目录结构、Makefile、Docker 多阶段构建，以及完整的 CI/CD 工作流。
 

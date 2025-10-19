@@ -1,4 +1,4 @@
-<center>
+<div align="center" markdown="1">
 
 # Go Project Template
 
@@ -10,7 +10,7 @@
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Mai0313/go_template/pulls)
 [![contributors](https://img.shields.io/github/contributors/Mai0313/go_template.svg)](https://github.com/Mai0313/go_template/graphs/contributors)
 
-</center>
+</div>
 
 🚀 A production‑ready Golang project template to bootstrap new Go services and CLIs quickly. It ships with a pragmatic layout, Makefile, Docker builds, and a complete CI/CD suite.
 

@@ -1,4 +1,4 @@
-<center>
+<div align="center" markdown="1">
 
 # Go 專案模板
 
@@ -10,7 +10,7 @@
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Mai0313/go_template/pulls)
 [![contributors](https://img.shields.io/github/contributors/Mai0313/go_template.svg)](https://github.com/Mai0313/go_template/graphs/contributors)
 
-</center>
+</div>
 
 🚀 幫助 Golang 開發者「快速建立新專案」的模板。提供務實的專案結構、Makefile、Docker 多階段建置，以及完整的 GitHub Actions 工作流程。
 
