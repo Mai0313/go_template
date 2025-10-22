@@ -65,11 +65,30 @@ $(foreach platform,$(PLATFORMS),$(eval $(call build_platform,$(platform))))
 
 # ---
 
+.PHONY: package-all $(addprefix package_,$(subst /,_,$(PLATFORMS)))
+package-all: build-all $(addprefix package_,$(subst /,_,$(PLATFORMS))) ## Build and package all platforms into zip files
+
+# Generic cross-platform package function
+define package_platform
+package_$(subst /,_,$(1)):
+	$(eval GOOS_VAL := $(word 1,$(subst /, ,$(1))))
+	$(eval GOARCH_VAL := $(word 2,$(subst /, ,$(1))))
+	$(eval SUFFIX := $(if $(filter windows,$(GOOS_VAL)),.exe,))
+	@$(foreach cmd,$(CMDS),cd $(BUILD_DIR) && zip -qm $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL).zip $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL)$(SUFFIX) && cd ..;)
+	@echo "\033[32mSuccessfully packaged for $(1)\033[0m"
+endef
+
+# Generate package rules for each platform
+$(foreach platform,$(PLATFORMS),$(eval $(call package_platform,$(platform))))
+
+# ---
+
 # Clean build artifacts
 .PHONY: clean
 clean: ## Remove build artifacts
 	@rm -rf $(BUILD_DIR) coverage.out
 	@find . -type f -name "*.DS_Store" -ls -delete
+	@find . -type f -name "*.zip" -ls -delete
 	@$(GO) clean -cache
 	@$(GO) clean -testcache
 	@$(GO) clean -fuzzcache

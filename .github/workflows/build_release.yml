@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Package
         run: |
-          make build-all
+          make package-all
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
