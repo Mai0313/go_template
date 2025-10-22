@@ -37,8 +37,8 @@ Repository = "https://github.com/Mai0313/go_template"
 "Bug Tracker" = "https://github.com/Mai0313/go_template/issues"
 
 [project.scripts]
-go_template = "go_template:main"
-gotemp = "go_template:main"
+gotemplate = "gotemplate:main"
+gotemp = "gotemplate:main"
 
 [build-system]
 requires = ["uv_build>=0.8.18,<0.9.0"]
