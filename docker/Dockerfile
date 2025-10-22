@@ -4,7 +4,7 @@ LABEL maintainer="Wei Lee <mai@mai0313.com>"
 RUN apk add --no-cache make git
 WORKDIR /app
 COPY . .
-RUN make build_linux_amd64
+RUN make
 
 ########################################################################################
 
