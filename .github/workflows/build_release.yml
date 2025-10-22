@@ -269,7 +269,7 @@ jobs:
         working-directory: cli/python
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
-          PACKAGE_NAME="${{ github.event.repository.name }}"
+          PACKAGE_NAME="gotemplate"
 
           echo "Waiting for PyPI registry to update..."
           sleep 15

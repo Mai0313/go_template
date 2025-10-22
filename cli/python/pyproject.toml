@@ -1,5 +1,5 @@
 [project]
-name = "go_template"
+name = "gotemplate"
 version = "0.1.0"
 description = "A production-ready Go project template to bootstrap new projects fast. It includes a clean Go module layout, Docker, and a complete CI/CD suite."
 authors = [{ name = "Wei Lee", email = "mai@mai0313.com" }]
