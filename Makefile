@@ -86,11 +86,15 @@ package_$(subst /,_,$(1)):
 	$(eval PLATFORM_NAME := $(call get_platform_name,$(1)))
 	$(eval ARCHIVE_EXT := $(if $(filter windows,$(GOOS_VAL)),zip,tar.gz))
 	@$(foreach cmd,$(CMDS),\
+		cd $(BUILD_DIR) && \
+		cp $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL)$(SUFFIX) $(cmd)$(SUFFIX) && \
 		if [ "$(ARCHIVE_EXT)" = "zip" ]; then \
-			cd $(BUILD_DIR) && zip -qm $(cmd)-v$(VERSION)-$(PLATFORM_NAME).$(ARCHIVE_EXT) $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL)$(SUFFIX) && cd ..; \
+			zip -qm $(cmd)-v$(VERSION)-$(PLATFORM_NAME).$(ARCHIVE_EXT) $(cmd)$(SUFFIX); \
 		else \
-			cd $(BUILD_DIR) && tar -czf $(cmd)-v$(VERSION)-$(PLATFORM_NAME).$(ARCHIVE_EXT) $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL)$(SUFFIX) && rm $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL)$(SUFFIX) && cd ..; \
-		fi; \
+			tar -czf $(cmd)-v$(VERSION)-$(PLATFORM_NAME).$(ARCHIVE_EXT) $(cmd)$(SUFFIX) && rm $(cmd)$(SUFFIX); \
+		fi && \
+		rm $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL)$(SUFFIX) && \
+		cd ..; \
 	)
 	@echo "\033[32mSuccessfully packaged for $(1) with version $(VERSION)\033[0m"
 endef
