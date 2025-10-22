@@ -40,6 +40,8 @@
   "files": [
     "bin/",
     "binaries/",
-    "README.md"
+    "README.md",
+    "README.zh-CN.md",
+    "README.zh-TW.md"
   ]
 }
