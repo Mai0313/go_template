@@ -14,9 +14,9 @@ BUILD_TIME := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
 # Build flags
-LDFLAGS := -X go-template/core/version.Version=$(VERSION) \
-		   -X go-template/core/version.BuildTime=$(BUILD_TIME) \
-		   -X go-template/core/version.GitCommit=$(GIT_COMMIT)
+LDFLAGS := -X go_template/core/version.Version=$(VERSION) \
+		   -X go_template/core/version.BuildTime=$(BUILD_TIME) \
+		   -X go_template/core/version.GitCommit=$(GIT_COMMIT)
 
 # Build directory
 BUILD_DIR := build

@@ -22,7 +22,7 @@
 
 - Makefile 任务：build、test、交叉编译、fmt、dead‑code 扫描
 - 版本信息嵌入：通过 `-ldflags` 注入 version、build time、git commit
-- 示例 CLI：`cmd/go-template` 支持 `--version`
+- 示例 CLI：`cmd/go_template` 支持 `--version`
 - 单元测试，CI 上传覆盖率 HTML 产物
 - Docker：多阶段构建，最小化运行时镜像
 - GitHub Actions：测试、静态检查（golangci‑lint）、镜像构建/推送、Release Drafter、标签、机密/代码扫描
@@ -47,7 +47,7 @@ make build-all        # 交叉编译常见 OS/ARCH
 运行示例 CLI：
 
 ```bash
-./build/go-template --version
+./build/go_template --version
 ```
 
 作为模板使用：
@@ -59,7 +59,7 @@ make build-all        # 交叉编译常见 OS/ARCH
 ## 项目结构
 
 ```text
-cmd/go-template/     # 主 CLI 入口
+cmd/go_template/     # 主 CLI 入口
 core/version/        # 版本工具与测试
 build/               # 编译输出（已被 .gitignore 忽略）
 docker/Dockerfile    # 多阶段镜像构建

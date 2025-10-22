@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"go-template/core/version"
+	"go_template/core/version"
 )
 
 func main() {

@@ -48,7 +48,7 @@ Multi-stage build optimized for caching and minimal runtime.
 
 ```
 cmd/               # Binary entrypoints (one subdirectory per binary)
-  └── go-template/ # Main CLI (rename this when creating new projects)
+  └── go_template/ # Main CLI (rename this when creating new projects)
 core/              # Shared packages and utilities
   └── version/     # Version info with semantic version parsing
 build/             # Build outputs (gitignored)
@@ -59,9 +59,9 @@ docker/            # Docker build files
 
 Version information is injected at build time via Makefile ldflags:
 
-- `go-template/core/version.Version` - from git tags (strips 'v' prefix)
-- `go-template/core/version.BuildTime` - ISO 8601 timestamp
-- `go-template/core/version.GitCommit` - short commit hash
+- `go_template/core/version.Version` - from git tags (strips 'v' prefix)
+- `go_template/core/version.BuildTime` - ISO 8601 timestamp
+- `go_template/core/version.GitCommit` - short commit hash
 
 The `core/version` package provides:
 
