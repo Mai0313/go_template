@@ -1,0 +1,45 @@
+[project]
+name = "go_template"
+version = "0.1.0"
+description = "A production-ready Go project template to bootstrap new projects fast. It includes a clean Go module layout, Docker, and a complete CI/CD suite."
+authors = [{ name = "Wei Lee", email = "mai@mai0313.com" }]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = []
+keywords = [
+    "cli",
+    "go",
+    "golang",
+    "template",
+    "go-template",
+    "boilerplate",
+    "starter-kit",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/Mai0313/go_template"
+Repository = "https://github.com/Mai0313/go_template"
+"Bug Tracker" = "https://github.com/Mai0313/go_template/issues"
+
+[project.scripts]
+go_template = "go_template:main"
+gotemp = "go_template:main"
+
+[build-system]
+requires = ["uv_build>=0.8.18,<0.9.0"]
+build-backend = "uv_build"

@@ -1,0 +1,45 @@
+{
+  "name": "go_template",
+  "version": "0.1.0",
+  "description": "A production-ready Go project template to bootstrap new projects fast. It includes a clean Go module layout, Docker, and a complete CI/CD suite.",
+  "author": "Wei Lee <mai@mai0313.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/Mai0313/go_template",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mai0313/go_template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mai0313/go_template/issues"
+  },
+  "keywords": [
+    "cli",
+    "go",
+    "golang",
+    "template",
+    "go-template",
+    "boilerplate",
+    "starter-kit"
+  ],
+  "bin": {
+    "go_template": "bin/start.js",
+    "gotemp": "bin/start.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "files": [
+    "bin/",
+    "binaries/",
+    "README.md"
+  ]
+}
