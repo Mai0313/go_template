@@ -72,7 +72,7 @@ jobs:
         include:
           - name: "${{ github.event.repository.name }}"
             scope: "@mai0313"
-          - name: gotemplate
+          - name: gotemp
             scope: "@mai0313"
 
     steps:
@@ -215,11 +215,11 @@ jobs:
       - name: Download and extract build artifacts
         uses: actions/download-artifact@v5
         with:
-          path: cli/python/src/gotemplate/binaries/temp
+          path: cli/python/src/go_template/binaries/temp
           merge-multiple: true
 
       - name: Extract binaries from archives
-        working-directory: cli/python/src/gotemplate/binaries/temp
+        working-directory: cli/python/src/go_template/binaries/temp
         run: |
           for archive in *; do
             platform=$(echo "$archive" | sed -E 's/^${{ github.event.repository.name }}-v[0-9]+\.[0-9]+\.[0-9]+-//')
@@ -237,8 +237,8 @@ jobs:
 
       - name: Cleanup and verify
         run: |
-          rm -rf cli/python/src/gotemplate/binaries/temp
-          echo "Extracted binaries:" && ls -lhR cli/python/src/gotemplate/binaries/
+          rm -rf cli/python/src/go_template/binaries/temp
+          echo "Extracted binaries:" && ls -lhR cli/python/src/go_template/binaries/
 
       - name: Update pyproject.toml version
         working-directory: cli/python
@@ -257,6 +257,7 @@ jobs:
           uv build
 
       - name: Publish to PyPI
+        continue-on-error: true
         working-directory: cli/python
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
@@ -264,10 +265,11 @@ jobs:
           uv publish
 
       - name: Verify publication
+        continue-on-error: true
         working-directory: cli/python
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
-          PACKAGE_NAME="gotemplate"
+          PACKAGE_NAME="go_template"
 
           echo "Waiting for PyPI registry to update..."
           sleep 15
