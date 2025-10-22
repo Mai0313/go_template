@@ -34,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Trufflehog Scanning
-        uses: trufflesecurity/trufflehog@v3.90.5
+        uses: trufflesecurity/trufflehog@v3.90.11
         with:
           extra_args: --results=verified,unknown
 
@@ -57,12 +57,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: CodeQL Initialize
-        uses: github/codeql-action/init@v3.29.11
+        uses: github/codeql-action/init@v4.30.9
         with:
           languages: go
 
       - name: CodeQL Analyze
-        uses: github/codeql-action/analyze@v3.29.11
+        uses: github/codeql-action/analyze@v4.30.9
 
   trivy-scanning:
     name: Trivy Scanning
@@ -83,10 +83,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Trivy
-        uses: aquasecurity/setup-trivy@v0.2.3
+        uses: aquasecurity/setup-trivy@v0.2.4
 
       - name: Trivy Scanning
-        uses: aquasecurity/trivy-action@0.32.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: fs
           ignore-unfixed: true
@@ -97,7 +97,7 @@ jobs:
           skip-setup-trivy: true
 
       - name: Trivy Scanning Result
-        uses: aquasecurity/trivy-action@0.32.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: fs
           ignore-unfixed: true
@@ -107,7 +107,7 @@ jobs:
           skip-setup-trivy: true
 
       - name: Upload Trivy SARIF
-        uses: github/codeql-action/upload-sarif@v3.29.11
+        uses: github/codeql-action/upload-sarif@v4.30.9
         with:
           # Path to SARIF file relative to the root of the repository
           sarif_file: trivy-results.sarif

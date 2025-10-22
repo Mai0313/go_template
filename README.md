@@ -22,7 +22,7 @@ Other Languages: [English](README.md) | [繁體中文](README.zh-TW.md) | [简�
 
 - Makefile tasks: build, test, cross‑compile, format, dead‑code scan
 - Version embedding via `-ldflags` (version, build time, git commit)
-- Example CLI under `cmd/go-template` with `--version`
+- Example CLI under `cmd/go_template` with `--version`
 - Unit tests with coverage artifact in CI
 - Docker: multi‑stage image build with cache and minimal runtime
 - GitHub Actions: test, lint (golangci‑lint), image build+push, release drafter, labels, secret/code scanning
@@ -47,7 +47,7 @@ make build-all        # cross‑compile common OS/ARCH targets
 Run the example CLI:
 
 ```bash
-./build/go-template --version
+./build/go_template --version
 ```
 
 Use as a template:
@@ -59,7 +59,7 @@ Use as a template:
 ## Project Structure
 
 ```text
-cmd/go-template/     # Main CLI entrypoint
+cmd/go_template/     # Main CLI entrypoint
 core/version/        # Version utilities and tests
 build/               # Build outputs (git‑ignored)
 docker/Dockerfile    # Multi‑stage image build

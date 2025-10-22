@@ -14,14 +14,14 @@ BUILD_TIME := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
 # Build flags
-LDFLAGS := -X go-template/core/version.Version=$(VERSION) \
-		   -X go-template/core/version.BuildTime=$(BUILD_TIME) \
-		   -X go-template/core/version.GitCommit=$(GIT_COMMIT)
+LDFLAGS := -X go_template/core/version.Version=$(VERSION) \
+		   -X go_template/core/version.BuildTime=$(BUILD_TIME) \
+		   -X go_template/core/version.GitCommit=$(GIT_COMMIT)
 
 # Build directory
 BUILD_DIR := build
-BIN_NAME := go-template
-PLATFORMS := linux/amd64 linux/arm64 windows/amd64 windows/arm64 darwin/amd64 darwin/arm64
+BIN_NAME := go_template
+PLATFORMS := linux/amd64/gnu linux/arm64/gnu windows/amd64 windows/arm64 darwin/amd64 darwin/arm64
 
 # Automatically find all command directories
 CMDS := $(notdir $(wildcard cmd/*))
@@ -65,11 +65,51 @@ $(foreach platform,$(PLATFORMS),$(eval $(call build_platform,$(platform))))
 
 # ---
 
+.PHONY: package-all $(addprefix package_,$(subst /,_,$(PLATFORMS)))
+package-all: build-all $(addprefix package_,$(subst /,_,$(PLATFORMS))) ## Build and package all platforms into archives with version
+
+# Map platform to archive format and directory naming
+define get_archive_info
+$(if $(filter windows,$(word 1,$(subst /, ,$(1)))),zip tar.gz)
+endef
+
+define get_platform_name
+$(if $(filter darwin,$(word 1,$(subst /, ,$(1)))),macos,$(word 1,$(subst /, ,$(1))))-$(if $(filter amd64,$(word 2,$(subst /, ,$(1)))),x64,$(if $(filter arm64,$(word 2,$(subst /, ,$(1)))),arm64,$(word 2,$(subst /, ,$(1)))))$(if $(filter gnu,$(word 3,$(subst /, ,$(1)))),-gnu,)
+endef
+
+# Generic cross-platform package function
+define package_platform
+package_$(subst /,_,$(1)):
+	$(eval GOOS_VAL := $(word 1,$(subst /, ,$(1))))
+	$(eval GOARCH_VAL := $(word 2,$(subst /, ,$(1))))
+	$(eval SUFFIX := $(if $(filter windows,$(GOOS_VAL)),.exe,))
+	$(eval PLATFORM_NAME := $(call get_platform_name,$(1)))
+	$(eval ARCHIVE_EXT := $(if $(filter windows,$(GOOS_VAL)),zip,tar.gz))
+	@$(foreach cmd,$(CMDS),\
+		cd $(BUILD_DIR) && \
+		cp $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL)$(SUFFIX) $(cmd)$(SUFFIX) && \
+		if [ "$(ARCHIVE_EXT)" = "zip" ]; then \
+			zip -qm $(cmd)-v$(VERSION)-$(PLATFORM_NAME).$(ARCHIVE_EXT) $(cmd)$(SUFFIX); \
+		else \
+			tar -czf $(cmd)-v$(VERSION)-$(PLATFORM_NAME).$(ARCHIVE_EXT) $(cmd)$(SUFFIX) && rm $(cmd)$(SUFFIX); \
+		fi && \
+		rm $(cmd)-$(GOOS_VAL)-$(GOARCH_VAL)$(SUFFIX) && \
+		cd ..; \
+	)
+	@echo "\033[32mSuccessfully packaged for $(1) with version $(VERSION)\033[0m"
+endef
+
+# Generate package rules for each platform
+$(foreach platform,$(PLATFORMS),$(eval $(call package_platform,$(platform))))
+
+# ---
+
 # Clean build artifacts
 .PHONY: clean
 clean: ## Remove build artifacts
 	@rm -rf $(BUILD_DIR) coverage.out
 	@find . -type f -name "*.DS_Store" -ls -delete
+	@find . -type f -name "*.zip" -ls -delete
 	@$(GO) clean -cache
 	@$(GO) clean -testcache
 	@$(GO) clean -fuzzcache

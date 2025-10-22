@@ -23,14 +23,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           check-latest: true
 
       - name: Build Package
         run: |
-          make build-all
+          make package-all
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: build
           merge-multiple: true
@@ -58,3 +58,229 @@ jobs:
         with:
           files: |
             build/*
+
+  publish-npm:
+    name: Publish to npm - ${{ matrix.scope && format('{0}/', matrix.scope) || '' }}${{ matrix.name }}
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    strategy:
+      matrix:
+        include:
+          - name: "${{ github.event.repository.name }}"
+            scope: "@mai0313"
+          - name: gotemp
+            scope: "@mai0313"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Publishing version: ${VERSION}"
+
+      - name: Download and extract build artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: cli/nodejs/binaries/temp
+          merge-multiple: true
+
+      - name: Extract binaries from archives
+        working-directory: cli/nodejs/binaries/temp
+        run: |
+          for archive in *; do
+            platform=$(echo "$archive" | sed -E 's/^${{ github.event.repository.name }}-v[0-9]+\.[0-9]+\.[0-9]+-//')
+            platform="${platform%.tar.gz}"
+            platform="${platform%.zip}"
+
+            echo "Extracting $archive to $platform/"
+            mkdir -p "../$platform"
+
+            case "$archive" in
+              *.tar.gz) tar -xzf "$archive" -C "../$platform" ;;
+              *.zip)    unzip -q "$archive" -d "../$platform" ;;
+            esac
+          done
+
+      - name: Cleanup and verify
+        run: |
+          rm -rf cli/nodejs/binaries/temp
+          echo "Extracted binaries:" && ls -lhR cli/nodejs/binaries/
+
+      - name: Update package.json version and name
+        working-directory: cli/nodejs
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          PACKAGE_NAME="${{ matrix.name }}"
+          SCOPE="${{ matrix.scope }}"
+
+          # Update version
+          npm version ${VERSION} --no-git-tag-version
+
+          # Update package name with scope if present
+          if [ -n "${SCOPE}" ]; then
+            FULL_NAME="${SCOPE}/${PACKAGE_NAME}"
+          else
+            FULL_NAME="${PACKAGE_NAME}"
+          fi
+
+          # Use jq to update package name
+          cat package.json | jq --arg name "${FULL_NAME}" '.name = $name' > package.json.tmp
+          mv package.json.tmp package.json
+
+      - name: Copy README for npm
+        run: |
+          cp README.md cli/nodejs/README.md
+          cp README.zh-CN.md cli/nodejs/README.zh-CN.md
+          cp README.zh-TW.md cli/nodejs/README.zh-TW.md
+
+      - name: Publish to npm with provenance
+        working-directory: cli/nodejs
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+        run: |
+          npm publish --provenance --access public
+
+      - name: Verify publication
+        working-directory: cli/nodejs
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          PACKAGE_NAME="${{ matrix.name }}"
+          SCOPE="${{ matrix.scope }}"
+
+          if [ -n "${SCOPE}" ]; then
+            FULL_NAME="${SCOPE}/${PACKAGE_NAME}"
+          else
+            FULL_NAME="${PACKAGE_NAME}"
+          fi
+
+          echo "Waiting for npm registry to update..."
+          sleep 10
+
+          # Check if version is available
+          PUBLISHED_VERSION=$(npm view ${FULL_NAME}@${VERSION} version 2>/dev/null || echo "")
+
+          if [ "${PUBLISHED_VERSION}" = "${VERSION}" ]; then
+            echo "✓ Successfully published ${FULL_NAME}@${VERSION}"
+            echo "Install with: npm install -g ${FULL_NAME}"
+          else
+            echo "Warning: Could not immediately verify publication"
+            echo "Please check: https://www.npmjs.com/package/${FULL_NAME}"
+          fi
+
+  publish-pypi:
+    name: Publish to pypi
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "latest"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Publishing version: ${VERSION}"
+
+      - name: Download and extract build artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: cli/python/src/go_template/binaries/temp
+          merge-multiple: true
+
+      - name: Extract binaries from archives
+        working-directory: cli/python/src/go_template/binaries/temp
+        run: |
+          for archive in *; do
+            platform=$(echo "$archive" | sed -E 's/^${{ github.event.repository.name }}-v[0-9]+\.[0-9]+\.[0-9]+-//')
+            platform="${platform%.tar.gz}"
+            platform="${platform%.zip}"
+
+            echo "Extracting $archive to $platform/"
+            mkdir -p "../$platform"
+
+            case "$archive" in
+              *.tar.gz) tar -xzf "$archive" -C "../$platform" ;;
+              *.zip)    unzip -q "$archive" -d "../$platform" ;;
+            esac
+          done
+
+      - name: Cleanup and verify
+        run: |
+          rm -rf cli/python/src/go_template/binaries/temp
+          echo "Extracted binaries:" && ls -lhR cli/python/src/go_template/binaries/
+
+      - name: Update pyproject.toml version
+        working-directory: cli/python
+        run: |
+          uv version ${{ steps.version.outputs.VERSION }} --frozen
+
+      - name: Copy README for PyPI
+        run: |
+          cp README.md cli/python/README.md
+          cp README.zh-CN.md cli/python/README.zh-CN.md
+          cp README.zh-TW.md cli/python/README.zh-TW.md
+
+      - name: Build package
+        working-directory: cli/python
+        run: |
+          uv build
+
+      - name: Publish to PyPI
+        continue-on-error: true
+        working-directory: cli/python
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
+        run: |
+          uv publish
+
+      - name: Verify publication
+        continue-on-error: true
+        working-directory: cli/python
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          PACKAGE_NAME="go_template"
+
+          echo "Waiting for PyPI registry to update..."
+          sleep 15
+
+          # Check if version is available
+          PUBLISHED_VERSION=$(pip index versions ${PACKAGE_NAME} 2>/dev/null | grep "Available versions:" | grep -o "${VERSION}" || echo "")
+
+          if [ "${PUBLISHED_VERSION}" = "${VERSION}" ]; then
+            echo "✓ Successfully published ${PACKAGE_NAME}==${VERSION}"
+            echo "Install with: pip install ${PACKAGE_NAME}"
+          else
+            echo "Warning: Could not immediately verify publication"
+            echo "Please check: https://pypi.org/project/${PACKAGE_NAME}/"
+          fi

@@ -32,4 +32,4 @@ go.work.sum
 # .idea/
 # .vscode/
 
-/go-template
+/go_template
