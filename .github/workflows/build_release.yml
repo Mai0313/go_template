@@ -72,10 +72,8 @@ jobs:
         include:
           - name: "${{ github.event.repository.name }}"
             scope: "@mai0313"
-          - name: gotemp
+          - name: gotemplate
             scope: "@mai0313"
-          - name: "${{ github.event.repository.name }}"
-            scope: ""
 
     steps:
       - name: Checkout
