@@ -11,21 +11,33 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
 
   # Dockerfiles
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
 
   # Devcontainers
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
