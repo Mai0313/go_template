@@ -5,7 +5,15 @@ This directory hosts configuration for a reproducible Go development environment
 ## What's Included?
 
 - **Dockerfile**: Go 1.x base image with zsh, oh-my-zsh, powerlevel10k, fonts, and common shell plugins.
-- **devcontainer.json**: VS Code settings and extension recommendations (`golang.go`, Docker, YAML, TOML, etc.).
+- **devcontainer.json**: VS Code settings and extension recommendations including:
+  - Database clients (JDBC, Redis)
+  - Git tools (GitLens)
+  - AI assistants (Copilot, HuggingFace)
+  - Container tools (Docker, Container support)
+  - Python development (Python, Pylance, Debugpy, Jupyter)
+  - C++ development (CPP tools)
+  - Rust development (rust-analyzer)
+  - Editor enhancements (indent-rainbow, YAML, TOML support)
 - Mounts for your `.gitconfig`, `.ssh`, and `.p10k.zsh`.
 
 ## Usage
