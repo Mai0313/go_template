@@ -46,8 +46,8 @@
   "dockerFile": "Dockerfile",
   "updateContentCommand": "go version || true",
   "mounts": [
-    "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached,ro",
-    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached,ro",
-    "source=${localEnv:HOME}/.p10k.zsh,target=/root/.p10k.zsh,type=bind,consistency=cached,ro"
+    "source=${localEnv:HOME}/.gitconfig,target=${containerEnv:HOME}/.gitconfig,type=bind,consistency=cached,ro",
+    "source=${localEnv:HOME}/.ssh,target=${containerEnv:HOME}/.ssh,type=bind,consistency=cached,ro",
+    "source=${localEnv:HOME}/.p10k.zsh,target=${containerEnv:HOME}/.p10k.zsh,type=bind,consistency=cached,ro"
   ]
 }
