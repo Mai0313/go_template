@@ -1,5 +1,5 @@
 default_language_version:
-  golang: 1.24.0
+  golang: 1.25.4
 
 default_install_hook_types:
   - pre-commit

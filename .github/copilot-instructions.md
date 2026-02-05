@@ -16,50 +16,55 @@
 Execute these changes systematically (use find/replace with whole-word matching):
 
 #### Go Module Files (Critical - affects all imports)
+
 1. **[go.mod](../go.mod)**: Replace `module go_template` → `module {your_project}`
 2. **[cmd/go_template/](../cmd/go_template/)**: Rename directory → `cmd/{your_project}/`
 3. **[cmd/{your_project}/main.go](../cmd/go_template/main.go)**: Update import `"go_template/core/version"` → `"{your_project}/core/version"`
-4. **[Makefile](../Makefile)**: 
-   - Line 17-19: Update LDFLAGS `-X go_template/core/version.*` → `-X {your_project}/core/version.*`
-   - Line 23: Update `BIN_NAME := go_template` → `BIN_NAME := {your_project}`
+4. **[Makefile](../Makefile)**:
+    - Line 17-19: Update LDFLAGS `-X go_template/core/version.*` → `-X {your_project}/core/version.*`
+    - Line 23: Update `BIN_NAME := go_template` → `BIN_NAME := {your_project}`
 
 #### Node.js CLI Wrapper
-5. **[cli/nodejs/package.json](../cli/nodejs/package.json)**:
-   - `name`: `"go_template"` → `"{your_project}"` (or `"@yourscope/{your_project}"`)
-   - `author`: Update to your name and email
-   - `homepage`, `repository.url`, `bugs.url`: Replace `Mai0313/go_template` → `{username}/{your_project}`
-   - `bin`: Update command names (both keys reference `go_template`)
-6. **[cli/nodejs/bin/start.js](../cli/nodejs/bin/start.js)**: 
-   - Lines 14, 15, 23, 24, 29, 30: Update `binary: 'go_template'` → `binary: '{your_project}'`
+
+1. **[cli/nodejs/package.json](../cli/nodejs/package.json)**:
+    - `name`: `"go_template"` → `"{your_project}"` (or `"@yourscope/{your_project}"`)
+    - `author`: Update to your name and email
+    - `homepage`, `repository.url`, `bugs.url`: Replace `Mai0313/go_template` → `{username}/{your_project}`
+    - `bin`: Update command names (both keys reference `go_template`)
+2. **[cli/nodejs/bin/start.js](../cli/nodejs/bin/start.js)**:
+    - Lines 14, 15, 23, 24, 29, 30: Update `binary: 'go_template'` → `binary: '{your_project}'`
 
 #### Python CLI Wrapper
-7. **[cli/python/pyproject.toml](../cli/python/pyproject.toml)**:
-   - `name`: `"go_template"` → `"{your_project}"`
-   - `authors`: Update to your info
-   - `project.urls`: Replace `Mai0313/go_template` → `{username}/{your_project}`
-   - `project.scripts`: Update command names
-8. **[cli/python/src/go_template/](../cli/python/src/go_template/)**: Rename directory → `cli/python/src/{your_project}/`
-9. **[cli/python/src/{your_project}/__init__.py](../cli/python/src/go_template/__init__.py)**:
-   - Lines 27, 28, 33, 34, 39, 40: Update `binary: "go_template"` → `binary: "{your_project}"`
+
+1. **[cli/python/pyproject.toml](../cli/python/pyproject.toml)**:
+    - `name`: `"go_template"` → `"{your_project}"`
+    - `authors`: Update to your info
+    - `project.urls`: Replace `Mai0313/go_template` → `{username}/{your_project}`
+    - `project.scripts`: Update command names
+2. **[cli/python/src/go_template/](../cli/python/src/go_template/)**: Rename directory → `cli/python/src/{your_project}/`
+3. **[cli/python/src/{your_project}/__init__.py](../cli/python/src/go_template/__init__.py)**:
+    - Lines 27, 28, 33, 34, 39, 40: Update `binary: "go_template"` → `binary: "{your_project}"`
 
 #### Docker & DevContainer
-10. **[docker/Dockerfile](../docker/Dockerfile)**:
+
+1. **[docker/Dockerfile](../docker/Dockerfile)**:
     - Line 2, 12: Update `maintainer` label to your info
     - Line 13: Update `org.label-schema.name="go_template"` → `org.label-schema.name="{your_project}"`
     - Line 14: Update `org.label-schema.vendor` to your name
     - Line 18: Update binary path `/usr/local/bin/go_template` → `/usr/local/bin/{your_project}`
     - Line 20: Update CMD to your binary name
-11. **[.devcontainer/Dockerfile](../.devcontainer/Dockerfile)**:
+2. **[.devcontainer/Dockerfile](../.devcontainer/Dockerfile)**:
     - Line 3: Update `maintainer` label to your info
     - Line 4: Update `org.label-schema.name="go_template"` → `org.label-schema.name="{your_project}"`
     - Line 5: Update `org.label-schema.vendor` to your name
 
 #### Documentation & CI/CD
-12. **[README.md](../README.md)**, **[README.zh-CN.md](../README.zh-CN.md)**, **[README.zh-TW.md](../README.zh-TW.md)**:
+
+1. **[README.md](../README.md)**, **[README.zh-CN.md](../README.zh-CN.md)**, **[README.zh-TW.md](../README.zh-TW.md)**:
     - All badge URLs: Replace `Mai0313/go_template` → `{username}/{your_project}`
     - npm badges: Replace `@mai0313/go_template` → your npm package name
     - Update project description if needed
-13. **[.github/CODEOWNERS](../.github/CODEOWNERS)**: Replace `@Mai0313` → `@{your_username}`
+2. **[.github/CODEOWNERS](../.github/CODEOWNERS)**: Replace `@Mai0313` → `@{your_username}`
 
 ### Step 3: Verification
 
@@ -94,6 +99,7 @@ grep -r "mai@mai0313.com" --exclude-dir=.git .
 ### Key Points for AI Agents
 
 When helping users adopt this template:
+
 1. **Always suggest a complete search-and-replace strategy** rather than file-by-file edits
 2. **Verify imports after renaming** — `go mod tidy` and `go build ./...` must succeed
 3. **Check binary name consistency** across Go (Makefile), Node.js (package.json + start.js), and Python (pyproject.toml + __init__.py)
@@ -109,6 +115,7 @@ This is a **multi-language wrapper project**: a Go core binary wrapped by Node.j
 **Core pattern**: `cmd/go_template/main.go` → Go binary → wrapped by JS/Python → distributed via npm/PyPI
 
 **Why CLI wrappers?**
+
 - Enables distribution via npm/PyPI in addition to direct binary downloads
 - Platform-specific binaries are downloaded on first install (not bundled)
 - Users can run `npx {your-package}` or `pip install {your-package}` without Go toolchain
@@ -127,9 +134,9 @@ Version info is **embedded at build time** via Makefile ldflags:
 
 ```go
 // Set in core/version/version.go via -ldflags at build time
-Version   = "v1.2.3"      // from git describe --tags
+Version = "v1.2.3"           // from git describe --tags
 BuildTime = "2026-02-05T..." // ISO 8601 timestamp
-GitCommit = "abc1234"      // short commit hash
+GitCommit = "abc1234"        // short commit hash
 ```
 
 The [core/version/version.go](../core/version/version.go) package also implements semantic version parsing that supports pre-release and build metadata (e.g., `1.2.3-alpha.1+build.123`).
@@ -159,6 +166,7 @@ The Makefile generates platform-specific archives with this naming convention:
 ```
 
 Where:
+
 - `{platform}` = `macos-x64|macos-arm64|linux-x64-gnu|linux-arm64-gnu|windows-x64|windows-arm64`
 - `{ext}` = `tar.gz` (unix) or `zip` (windows)
 
@@ -178,6 +186,7 @@ CLI wrappers (Node.js/Python) expect binaries in `binaries/{platform-dir}/go_tem
 Pre-commit runs on **4 events**: `pre-commit`, `post-checkout`, `post-merge`, `post-rewrite`
 
 Key hooks enforced:
+
 - **shellcheck** for shell scripts
 - **mdformat** with plugins (gofmt, footnotes, GFM, frontmatter)
 - **codespell** spell checking
@@ -187,6 +196,7 @@ Key hooks enforced:
 ## Docker Workflow
 
 Multi-stage [Dockerfile](../docker/Dockerfile):
+
 1. **Builder stage** (`golang:1.24-alpine`): Compiles binary with `make`
 2. **Production stage** (`alpine:3.21`): Minimal image with just the binary + CA certs
 
@@ -215,6 +225,7 @@ docker run --rm -it your/image:dev
 ## Adding New Commands
 
 To add a new command:
+
 1. Create `cmd/{newcommand}/main.go`
 2. Run `make build` — Makefile auto-discovers it
 3. Binary appears at `build/{newcommand}`

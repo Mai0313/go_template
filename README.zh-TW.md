@@ -67,22 +67,26 @@ make build-all        # 跨平台編譯常見 OS/ARCH
 **必要修改**（將 `{your_project}` 替換為你的實際專案名稱）：
 
 1. **Go 模組**：
-   - 更新 `go.mod`：`module go_template` → `module {your_project}`
-   - 重新命名 `cmd/go_template/` → `cmd/{your_project}/`
-   - 更新 `cmd/{your_project}/main.go` 中的匯入
-   - 更新 `Makefile` 的 LDFLAGS（第17-19行）和 `BIN_NAME`（第23行）
+
+    - 更新 `go.mod`：`module go_template` → `module {your_project}`
+    - 重新命名 `cmd/go_template/` → `cmd/{your_project}/`
+    - 更新 `cmd/{your_project}/main.go` 中的匯入
+    - 更新 `Makefile` 的 LDFLAGS（第17-19行）和 `BIN_NAME`（第23行）
 
 2. **CLI 包裝器**（如果使用 npm/PyPI 發佈）：
-   - Node.js：更新 `cli/nodejs/package.json` 和 `cli/nodejs/bin/start.js`
-   - Python：更新 `cli/python/pyproject.toml` 並重新命名 `cli/python/src/go_template/`
+
+    - Node.js：更新 `cli/nodejs/package.json` 和 `cli/nodejs/bin/start.js`
+    - Python：更新 `cli/python/pyproject.toml` 並重新命名 `cli/python/src/go_template/`
 
 3. **Docker**：
-   - 更新 `docker/Dockerfile` 標籤和二進位路徑
-   - 更新 `.devcontainer/Dockerfile` 標籤
+
+    - 更新 `docker/Dockerfile` 標籤和二進位路徑
+    - 更新 `.devcontainer/Dockerfile` 標籤
 
 4. **文件**：
-   - 更新 `README.md`、`README.zh-CN.md`、`README.zh-TW.md` 中的徽章 URL
-   - 更新 `.github/CODEOWNERS`
+
+    - 更新 `README.md`、`README.zh-CN.md`、`README.zh-TW.md` 中的徽章 URL
+    - 更新 `.github/CODEOWNERS`
 
 **驗證**：
 

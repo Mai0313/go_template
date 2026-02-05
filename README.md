@@ -67,22 +67,26 @@ Run the example CLI:
 **Required changes** (replace `{your_project}` with your actual project name):
 
 1. **Go Module**:
-   - Update `go.mod`: `module go_template` → `module {your_project}`
-   - Rename `cmd/go_template/` → `cmd/{your_project}/`
-   - Update imports in `cmd/{your_project}/main.go`
-   - Update `Makefile` LDFLAGS (lines 17-19) and `BIN_NAME` (line 23)
+
+    - Update `go.mod`: `module go_template` → `module {your_project}`
+    - Rename `cmd/go_template/` → `cmd/{your_project}/`
+    - Update imports in `cmd/{your_project}/main.go`
+    - Update `Makefile` LDFLAGS (lines 17-19) and `BIN_NAME` (line 23)
 
 2. **CLI Wrappers** (if using npm/PyPI distribution):
-   - Node.js: Update `cli/nodejs/package.json` and `cli/nodejs/bin/start.js`
-   - Python: Update `cli/python/pyproject.toml` and rename `cli/python/src/go_template/`
+
+    - Node.js: Update `cli/nodejs/package.json` and `cli/nodejs/bin/start.js`
+    - Python: Update `cli/python/pyproject.toml` and rename `cli/python/src/go_template/`
 
 3. **Docker**:
-   - Update `docker/Dockerfile` labels and binary paths
-   - Update `.devcontainer/Dockerfile` labels
+
+    - Update `docker/Dockerfile` labels and binary paths
+    - Update `.devcontainer/Dockerfile` labels
 
 4. **Documentation**:
-   - Update badge URLs in `README.md`, `README.zh-CN.md`, `README.zh-TW.md`
-   - Update `.github/CODEOWNERS`
+
+    - Update badge URLs in `README.md`, `README.zh-CN.md`, `README.zh-TW.md`
+    - Update `.github/CODEOWNERS`
 
 **Verification**:
 
