@@ -52,11 +52,47 @@ make build-all        # 交叉编译常见 OS/ARCH
 ./build/go_template --version
 ```
 
-作为模板使用：
+## 作为模板使用
 
-1. 点击“使用此模板”创建你的仓库
-2. 按需修改 `go.mod` 的 module 名称
-3. 若需更换二进制名称，调整 `cmd/` 目录结构
+**重要提示**：这是一个模板，不是库。你必须将 `go_template` 重命名为你的项目名称。
+
+### 快速设置
+
+1. 点击 **使用此模板** 创建你的仓库
+2. 克隆你的新仓库
+3. 运行重命名脚本或按照下方手动步骤操作
+
+### 手动重命名步骤
+
+**必需修改**（将 `{your_project}` 替换为你的实际项目名称）：
+
+1. **Go 模块**：
+   - 更新 `go.mod`：`module go_template` → `module {your_project}`
+   - 重命名 `cmd/go_template/` → `cmd/{your_project}/`
+   - 更新 `cmd/{your_project}/main.go` 中的导入
+   - 更新 `Makefile` 的 LDFLAGS（第17-19行）和 `BIN_NAME`（第23行）
+
+2. **CLI 包装器**（如果使用 npm/PyPI 分发）：
+   - Node.js：更新 `cli/nodejs/package.json` 和 `cli/nodejs/bin/start.js`
+   - Python：更新 `cli/python/pyproject.toml` 并重命名 `cli/python/src/go_template/`
+
+3. **Docker**：
+   - 更新 `docker/Dockerfile` 标签和二进制路径
+   - 更新 `.devcontainer/Dockerfile` 标签
+
+4. **文档**：
+   - 更新 `README.md`、`README.zh-CN.md`、`README.zh-TW.md` 中的徽章 URL
+   - 更新 `.github/CODEOWNERS`
+
+**验证**：
+
+```bash
+make clean && make build
+./build/{your_project} --version
+grep -r "go_template" --exclude-dir=.git --exclude-dir=build .
+```
+
+详细说明请参见 [.github/copilot-instructions.md](.github/copilot-instructions.md)。
 
 ## 项目结构
 
