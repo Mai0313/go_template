@@ -52,11 +52,47 @@ Run the example CLI:
 ./build/go_template --version
 ```
 
-Use as a template:
+## Using as a Template
 
-1. Click Use this template to create your repository
-2. Replace module name in `go.mod` as needed
-3. Rename the command under `cmd/` if you want a different binary name
+**IMPORTANT**: This is a template, not a library. You must rename `go_template` to your project name.
+
+### Quick Setup
+
+1. Click **Use this template** to create your repository
+2. Clone your new repository
+3. Run the rename script or follow manual steps below
+
+### Manual Rename Steps
+
+**Required changes** (replace `{your_project}` with your actual project name):
+
+1. **Go Module**:
+   - Update `go.mod`: `module go_template` → `module {your_project}`
+   - Rename `cmd/go_template/` → `cmd/{your_project}/`
+   - Update imports in `cmd/{your_project}/main.go`
+   - Update `Makefile` LDFLAGS (lines 17-19) and `BIN_NAME` (line 23)
+
+2. **CLI Wrappers** (if using npm/PyPI distribution):
+   - Node.js: Update `cli/nodejs/package.json` and `cli/nodejs/bin/start.js`
+   - Python: Update `cli/python/pyproject.toml` and rename `cli/python/src/go_template/`
+
+3. **Docker**:
+   - Update `docker/Dockerfile` labels and binary paths
+   - Update `.devcontainer/Dockerfile` labels
+
+4. **Documentation**:
+   - Update badge URLs in `README.md`, `README.zh-CN.md`, `README.zh-TW.md`
+   - Update `.github/CODEOWNERS`
+
+**Verification**:
+
+```bash
+make clean && make build
+./build/{your_project} --version
+grep -r "go_template" --exclude-dir=.git --exclude-dir=build .
+```
+
+For detailed instructions, see [.github/copilot-instructions.md](.github/copilot-instructions.md).
 
 ## Project Structure
 
