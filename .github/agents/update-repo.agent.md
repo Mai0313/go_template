@@ -23,11 +23,4 @@ Here are some files and folders you may need to check:
 - `./README.zh-CN.md`
 - `./README.zh-TW.md`
 
-You need to keep project related files, folders and configurations unchanged, and only update the repository related files, folders and configurations. The following files and folders are project-specific and should NOT be modified:
-
-- `./cmd`
-- `./core`
-- `./cli`
-- `./go.mod`
-
-After checking the above files and folders, please proceed with updating the repository actions, settings, and configurations as needed.
+You need to keep project-related files, folders, and configurations unchanged, and only update the repository infrastructure files listed above. After checking the above files and folders, please proceed with updating the repository actions, settings, and configurations as needed.
