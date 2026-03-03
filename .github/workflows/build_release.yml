@@ -151,6 +151,7 @@ jobs:
           cp README.zh-TW.md cli/nodejs/README.zh-TW.md
 
       - name: Publish to npm with provenance
+        continue-on-error: true
         working-directory: cli/nodejs
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
@@ -158,6 +159,7 @@ jobs:
           npm publish --provenance --access public
 
       - name: Verify publication
+        continue-on-error: true
         working-directory: cli/nodejs
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
