@@ -215,45 +215,14 @@ docker run --rm -it your/image:dev
 
 **Release process**: Push a git tag starting with `v` (e.g., `v1.2.3`) to trigger automated builds and release creation.
 
-## GitHub Actions Format Guidelines
+## GitHub Actions Formatting Conventions
 
-### Job property order
+When editing or creating GitHub Actions workflow files, follow these rules:
 
-Always define job properties in this order: `name`, `needs`, `runs-on`, `if`
-
-```yaml
-jobs:
-  example-job:
-    name: Example Job
-    needs: other-job
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
-```
-
-### Step property order
-
-Always define step properties in this order: `name`, `id`, `continue-on-error`, `if`, `uses`, `with`, `env`, `shell`, `run`
-
-```yaml
-steps:
-  - name: Example Step
-    id: example
-    continue-on-error: true
-    if: ${{ steps.other.outputs.result }}
-    uses: some/action@v1
-    with:
-      param: value
-    env:
-      TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    run: |
-      echo "hello"
-```
-
-### Other conventions
-
-- **No `container` fields**: Do not add `container` fields to jobs (remove even commented-out ones)
-- **No MTK Certification steps**: Do not add Setup MTK Certification steps (remove even commented-out ones)
-- **No redundant env vars**: Avoid defining environment variables that are only used once in a `run` command — use the expression directly in the command instead. For example, use `"${{ github.event.pull_request.html_url }}"` directly in the `run` block rather than defining `PR_URL: ${{ github.event.pull_request.html_url }}` in `env`
+- **Do not** include `container` fields or `Setup MTK Certification` steps.
+- **Job attribute order**: `name`, `needs`, `runs-on`, `if` (followed by other attributes such as `strategy`, `steps`, etc.)
+- **Step attribute order**: `name`, `id`, `continue-on-error`, `if`, `uses`, `with`, `env`, `shell`, `run`
+- **Avoid redundant environment variables**: Do not define env vars (e.g., `PR_URL: ${{ github.event.pull_request.html_url }}`) that are only used once in a `run` command. Use the expression directly in the command instead.
 
 ## Project-Specific Patterns
 
