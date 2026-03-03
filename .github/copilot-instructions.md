@@ -215,6 +215,15 @@ docker run --rm -it your/image:dev
 
 **Release process**: Push a git tag starting with `v` (e.g., `v1.2.3`) to trigger automated builds and release creation.
 
+## GitHub Actions Formatting Conventions
+
+When editing or creating GitHub Actions workflow files, follow these rules:
+
+- **Do not** include `container` fields or `Setup MTK Certification` steps.
+- **Job attribute order**: `name`, `needs`, `runs-on`, `if` (followed by other attributes such as `strategy`, `steps`, etc.)
+- **Step attribute order**: `name`, `id`, `continue-on-error`, `if`, `uses`, `with`, `env`, `shell`, `run`
+- **Avoid redundant environment variables**: Do not define env vars (e.g., `PR_URL: ${{ github.event.pull_request.html_url }}`) that are only used once in a `run` command. Use the expression directly in the command instead.
+
 ## Project-Specific Patterns
 
 1. **Auto-command discovery**: Makefile uses `$(notdir $(wildcard cmd/*))` to find all commands automatically

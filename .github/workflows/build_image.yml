@@ -23,7 +23,6 @@ jobs:
   build_images:
     name: Build and Push Images
     runs-on: ubuntu-latest
-    # container: catthehacker/ubuntu:act-22.04  # Uncomment it if you use it on Gitea
 
     strategy:
       matrix:
@@ -35,9 +34,6 @@ jobs:
     steps:
       - name: Disable SSL Verify
         run: git config --global http.sslVerify false
-
-      # - name: Setup MTK Certification
-      #   uses: https://gitea.mediatek.inc/actions/mtk-cert-action@v1.2.0
 
       - name: Checkout
         uses: actions/checkout@v6
