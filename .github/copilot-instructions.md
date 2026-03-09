@@ -287,7 +287,7 @@ Makefile changes are required only for advanced build configurations.
 ## Critical Usage Guidelines
 
 - **After every code change, always run `pre-commit run -a` before committing** to ensure all hooks (mdformat, codespell, gitleaks, shellcheck, etc.) pass.
-- **All commit messages and PR titles must be in English and follow [Conventional Commits](https://www.conventionalcommits.org/)** (e.g. `feat: add login page`, `fix(api): handle null response`)
+- **All commit messages and PR titles must be in English and follow [Git Conventions](#git-conventions)** (e.g. `feat: add login page`, `fix(api): handle null response`)
 - Always run `make fmt` to format Go code before committing
 - Always run `make test` to verify tests pass before submitting a PR
 - Always run `make clean && make build` to verify the build before tagging a release
