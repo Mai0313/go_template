@@ -215,6 +215,37 @@ docker run --rm -it your/image:dev
 
 **Release process**: Push a git tag starting with `v` (e.g., `v1.2.3`) to trigger automated builds and release creation.
 
+## Git Conventions
+
+### Commit Messages
+
+- **All commit messages must be written in English** — no other languages are accepted.
+
+- Commit messages must follow the **Conventional Commits** specification:
+
+    ```
+    <type>[optional scope]: <description>
+
+    [optional body]
+
+    [optional footer(s)]
+    ```
+
+- Common types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`, `perf`, `revert`
+
+- Examples:
+
+    - `feat(cli): add --verbose flag to output detailed logs`
+    - `fix(auth): handle token expiry edge case`
+    - `docs: update README with new installation steps`
+    - `chore: bump pre-commit hook versions`
+
+### Pull Request Titles
+
+- **All PR titles must be written in English** — no other languages are accepted.
+- PR titles must also follow the **Conventional Commits** format.
+- The PR title becomes the squash-merge commit message, so it must be descriptive and accurate.
+
 ## GitHub Actions Formatting Conventions
 
 When editing or creating GitHub Actions workflow files, follow these rules:
