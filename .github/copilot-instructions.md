@@ -105,6 +105,7 @@ When helping users adopt this template:
 3. **Check binary name consistency** across Go (Makefile), Node.js (package.json + start.js), and Python (pyproject.toml + __init__.py)
 4. **Update all three README files** (English, zh-CN, zh-TW) to maintain documentation consistency
 5. **Test the build** with `make clean && make build` before committing changes
+6. **After every code change, run `pre-commit run -a`** to ensure all hooks (mdformat, codespell, gitleaks, etc.) pass before committing
 
 ---
 
@@ -193,6 +194,8 @@ Key hooks enforced:
 - **gitleaks** secret scanning
 - Standard checks: JSON/YAML/TOML validation, trailing whitespace, EOF fixer
 
+**After every code change, always run `pre-commit run -a` to ensure all hooks pass before committing.**
+
 ## Docker Workflow
 
 Multi-stage [Dockerfile](../docker/Dockerfile):
@@ -280,3 +283,11 @@ Makefile changes are required only for advanced build configurations.
 - [cli/nodejs/bin/start.js](../cli/nodejs/bin/start.js): Node.js wrapper that spawns Go binary
 - [cli/python/src/go_template/__init__.py](../cli/python/src/go_template/__init__.py): Python wrapper equivalent
 - [.pre-commit-config.yaml](../.pre-commit-config.yaml): Pre-commit hook configuration
+
+## Critical Usage Guidelines
+
+- **After every code change, always run `pre-commit run -a` before committing** to ensure all hooks (mdformat, codespell, gitleaks, shellcheck, etc.) pass.
+- **All commit messages and PR titles must be in English and follow [Git Conventions](#git-conventions)** (e.g. `feat: add login page`, `fix(api): handle null response`)
+- Always run `make fmt` to format Go code before committing
+- Always run `make test` to verify tests pass before submitting a PR
+- Always run `make clean && make build` to verify the build before tagging a release
