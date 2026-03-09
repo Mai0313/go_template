@@ -215,31 +215,33 @@ docker run --rm -it your/image:dev
 
 **Release process**: Push a git tag starting with `v` (e.g., `v1.2.3`) to trigger automated builds and release creation.
 
-## Commit Message & PR Title Conventions
+## Git Conventions
 
-All commit messages and PR titles **must**:
+### Commit Messages
 
-1. **Be written in English** — no other languages are accepted.
-2. **Follow [Conventional Commits](https://www.conventionalcommits.org/)** — use the format:
+- **All commit messages must be written in English** — no other languages are accepted.
+- Commit messages must follow the **Conventional Commits** specification:
 
-   ```
-   <type>(<scope>): <short description>
-   ```
+    ```
+    <type>[optional scope]: <description>
 
-   Common types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`, `perf`, `build`, `revert`
+    [optional body]
 
-   Examples:
+    [optional footer(s)]
+    ```
 
-   - `feat(auth): add JWT refresh token support`
-   - `fix(version): correct semver pre-release parsing`
-   - `docs: update README installation steps`
-   - `chore(deps): upgrade golangci-lint to v1.57`
-   - `ci: skip tests for docs-only branches`
+- Common types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`, `perf`, `revert`
+- Examples:
+    - `feat(cli): add --verbose flag to output detailed logs`
+    - `fix(auth): handle token expiry edge case`
+    - `docs: update README with new installation steps`
+    - `chore: bump pre-commit hook versions`
 
-3. **Keep the subject line concise** — 72 characters or fewer.
-4. **Use the imperative mood** in the subject line (e.g., "add feature" not "added feature").
+### Pull Request Titles
 
-> **Note for AI agents**: When generating commit messages or suggesting PR titles, always apply these rules. Never use a language other than English, and always prefix with a Conventional Commits type.
+- **All PR titles must be written in English** — no other languages are accepted.
+- PR titles must also follow the **Conventional Commits** format.
+- The PR title becomes the squash-merge commit message, so it must be descriptive and accurate.
 
 ## GitHub Actions Formatting Conventions
 
