@@ -29,9 +29,8 @@ jobs:
 
       - name: Update Pre-Commit
         run: |
-          uv tool install pre-commit
-          uv tool run pre-commit autoupdate -j 8
-          uv tool run pre-commit run -a
+          uvx pre-commit autoupdate -j 8
+          uvx pre-commit run -a
 
       - name: Create Pull Request
         id: create-pr
@@ -50,4 +49,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr merge --squash --auto --delete-branch "${{ steps.create-pr.outputs.pull-request-url }}"
+          gh pr merge --squash --delete-branch "${{ steps.create-pr.outputs.pull-request-url }}"
