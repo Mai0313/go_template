@@ -31,9 +31,22 @@ jobs:
       - name: Upsert draft release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.git-cliff.outputs.version }}
+          NOTES_FILE: ${{ steps.git-cliff.outputs.changelog }}
         run: |
-          if gh release view "${{ steps.git-cliff.outputs.version }}" --json isDraft --jq '.isDraft' 2>/dev/null | grep -q '^true$'; then
-            gh release edit "${{ steps.git-cliff.outputs.version }}" --draft=true --notes-file "${{ steps.git-cliff.outputs.changelog }}"
+          set -euo pipefail
+
+          # Remove stale drafts whose tag no longer matches the bumped version,
+          # otherwise every minor/major bump leaves an orphan draft behind.
+          while IFS= read -r tag; do
+            if [[ -n "$tag" && "$tag" != "$VERSION" ]]; then
+              echo "Removing stale draft: $tag"
+              gh release delete "$tag" --yes
+            fi
+          done < <(gh release list --limit 100 --json tagName,isDraft --jq '.[] | select(.isDraft) | .tagName')
+
+          if [[ "$(gh release view "$VERSION" --json isDraft --jq '.isDraft' 2>/dev/null || true)" == "true" ]]; then
+            gh release edit "$VERSION" --draft=true --notes-file "$NOTES_FILE"
           else
-            gh release create "${{ steps.git-cliff.outputs.version }}" --draft --title "${{ steps.git-cliff.outputs.version }}" --notes-file "${{ steps.git-cliff.outputs.changelog }}"
+            gh release create "$VERSION" --draft --title "$VERSION" --notes-file "$NOTES_FILE"
           fi
