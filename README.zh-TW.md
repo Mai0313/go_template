@@ -123,7 +123,7 @@ docker run --rm -it your/image:dev
 - Docker 映像：`.github/workflows/build_image.yml`
 - 釋出草稿：`.github/workflows/release_drafter.yml`
 - 標籤與語義化：`.github/workflows/auto_labeler.yml`, `semantic-pull-request.yml`
-- 安全性：`.github/workflows/code_scan.yml`（gitleaks、trivy、codeql）
+- 安全性：`.github/workflows/code_scan.yml`（gitleaks、codeql）
 
 ## 貢獻指南
 

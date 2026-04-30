@@ -214,7 +214,7 @@ docker run --rm -it your/image:dev
 - [code-quality-check.yml](workflows/code-quality-check.yml): Linting with golangci-lint
 - [build_release.yml](workflows/build_release.yml): Triggered on `v*` tags, runs `make package-all`, creates GitHub release
 - [build_image.yml](workflows/build_image.yml): Builds and pushes Docker image
-- [code_scan.yml](workflows/code_scan.yml): Security scanning (gitleaks, trivy, CodeQL)
+- [code_scan.yml](workflows/code_scan.yml): Security scanning (gitleaks, CodeQL)
 
 **Release process**: Push a git tag starting with `v` (e.g., `v1.2.3`) to trigger automated builds and release creation.
 

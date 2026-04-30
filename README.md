@@ -123,7 +123,7 @@ docker run --rm -it your/image:dev
 - docker image: `.github/workflows/build_image.yml`
 - release drafter: `.github/workflows/release_drafter.yml`
 - labels & semantics: `.github/workflows/auto_labeler.yml`, `semantic-pull-request.yml`
-- security: `.github/workflows/code_scan.yml` (gitleaks, trivy, codeql)
+- security: `.github/workflows/code_scan.yml` (gitleaks, codeql)
 
 ## Contribution
 
