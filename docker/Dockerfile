@@ -3,8 +3,18 @@ LABEL maintainer="Wei Lee <mai@mai0313.com>"
 
 RUN apk add --no-cache make git
 WORKDIR /app
+
+# Pre-fetch modules so a source-only change doesn't re-download deps.
+# `go.*` covers go.mod and (when present) go.sum.
+COPY go.* ./
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go mod download
+
 COPY . .
-RUN make
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    make
 
 ########################################################################################
 
