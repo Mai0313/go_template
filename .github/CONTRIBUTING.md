@@ -127,18 +127,18 @@ Format:
 
 Allowed types:
 
-| Type | Purpose |
-| --- | --- |
-| `feat` | A new feature |
-| `fix` | A bug fix |
+| Type       | Purpose                                                 |
+| ---------- | ------------------------------------------------------- |
+| `feat`     | A new feature                                           |
+| `fix`      | A bug fix                                               |
 | `refactor` | Code change that neither fixes a bug nor adds a feature |
-| `doc` | Documentation-only changes |
-| `perf` | Performance improvement |
-| `style` | Formatting or stylistic changes |
-| `test` | Adding or correcting tests |
-| `chore` | Build, tooling, or auxiliary changes |
-| `ci` | Continuous integration changes |
-| `revert` | Reverting a previous commit |
+| `doc`      | Documentation-only changes                              |
+| `perf`     | Performance improvement                                 |
+| `style`    | Formatting or stylistic changes                         |
+| `test`     | Adding or correcting tests                              |
+| `chore`    | Build, tooling, or auxiliary changes                    |
+| `ci`       | Continuous integration changes                          |
+| `revert`   | Reverting a previous commit                             |
 
 Append `!` after the type or include `BREAKING CHANGE:` in the footer to indicate a breaking change. Reference issues with `Closes #123` or `Refs #123`.
 
