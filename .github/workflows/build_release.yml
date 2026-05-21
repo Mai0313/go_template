@@ -1,4 +1,4 @@
-name: Build Release
+name: Build and Release
 
 on:
   push:
@@ -6,6 +6,10 @@ on:
       - v*
 
 permissions: write-all
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -39,22 +43,28 @@ jobs:
           overwrite: true
 
   release:
-    name: Release Package
-    needs: build
+    name: Create GitHub Release
+    needs:
+      - build
     runs-on: ubuntu-latest
 
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v8
         with:
-          path: build
+          path: dist
           merge-multiple: true
 
+      - name: List downloaded artifacts
+        run: |
+          echo "Downloaded artifact contents:"
+          ls -alR dist
+
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
-            build/*
+            dist/**/*
 
   publish-npm:
     name: Publish to npm - ${{ matrix.scope && format('{0}/', matrix.scope) || '' }}${{ matrix.name }}
@@ -62,6 +72,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
+      contents: read
       id-token: write
 
     strategy:
@@ -71,6 +82,8 @@ jobs:
             scope: "@mai0313"
           - name: gotemp
             scope: "@mai0313"
+          - name: gotemplate
+            scope: ""
 
     steps:
       - name: Checkout
@@ -82,8 +95,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
+          node-version: lts/*
+
+      - name: Update npm
+        run: |
+          npm install -g npm@latest
 
       - name: Extract version from tag
         id: version
@@ -147,12 +163,10 @@ jobs:
           cp README.zh-CN.md cli/nodejs/README.zh-CN.md
           cp README.zh-TW.md cli/nodejs/README.zh-TW.md
 
-      - name: Publish to npm with provenance
+      - name: Publish to npm
         working-directory: cli/nodejs
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
-          npm publish --provenance --access public
+          npm publish --access public
 
       - name: Verify publication
         working-directory: cli/nodejs
@@ -212,11 +226,11 @@ jobs:
       - name: Download and extract build artifacts
         uses: actions/download-artifact@v8
         with:
-          path: cli/python/src/go_template/binaries/temp
+          path: cli/python/src/${{ github.event.repository.name }}/binaries/temp
           merge-multiple: true
 
       - name: Extract binaries from archives
-        working-directory: cli/python/src/go_template/binaries/temp
+        working-directory: cli/python/src/${{ github.event.repository.name }}/binaries/temp
         run: |
           for archive in *; do
             platform=$(echo "$archive" | sed -E 's/^${{ github.event.repository.name }}-v[0-9]+\.[0-9]+\.[0-9]+-//')
@@ -234,8 +248,8 @@ jobs:
 
       - name: Cleanup and verify
         run: |
-          rm -rf cli/python/src/go_template/binaries/temp
-          echo "Extracted binaries:" && ls -lhR cli/python/src/go_template/binaries/
+          rm -rf cli/python/src/${{ github.event.repository.name }}/binaries/temp
+          echo "Extracted binaries:" && ls -lhR cli/python/src/${{ github.event.repository.name }}/binaries/
 
       - name: Update pyproject.toml version
         working-directory: cli/python
@@ -254,7 +268,6 @@ jobs:
           uv build
 
       - name: Publish to PyPI
-        continue-on-error: true
         working-directory: cli/python
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
@@ -262,11 +275,10 @@ jobs:
           uv publish
 
       - name: Verify publication
-        continue-on-error: true
         working-directory: cli/python
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
-          PACKAGE_NAME="go_template"
+          PACKAGE_NAME="${{ github.event.repository.name }}"
 
           echo "Waiting for PyPI registry to update..."
           sleep 15
