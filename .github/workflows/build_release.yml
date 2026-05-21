@@ -82,8 +82,6 @@ jobs:
             scope: "@mai0313"
           - name: gotemp
             scope: "@mai0313"
-          - name: gotemplate
-            scope: ""
 
     steps:
       - name: Checkout
