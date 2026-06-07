@@ -28,4 +28,9 @@ LABEL maintainer="Wei Lee <mai@mai0313.com>" \
 RUN apk add --no-cache ca-certificates tzdata
 COPY --from=builder /app/build/go_template /usr/local/bin/go_template
 RUN chmod +x /usr/local/bin/go_template
+
+# Run as a non-root user so bind-mounted files are not root-owned on the host.
+RUN addgroup -g 1000 app \
+    && adduser -D -u 1000 -G app app
+USER app
 CMD ["go_template"]
