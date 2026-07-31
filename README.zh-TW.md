@@ -96,7 +96,7 @@ make clean && make build
 grep -r "go_template" --exclude-dir=.git --exclude-dir=build .
 ```
 
-詳細說明請參見 [.github/copilot-instructions.md](.github/copilot-instructions.md)。
+詳細說明請參見 [CLAUDE.md](CLAUDE.md)。
 
 ## 專案結構
 
