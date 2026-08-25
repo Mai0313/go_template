@@ -81,7 +81,6 @@ make build-all        # 跨平台編譯常見 OS/ARCH
 3. **Docker**：
 
     - 更新 `docker/Dockerfile` 標籤和二進位路徑
-    - 更新 `.devcontainer/Dockerfile` 標籤
 
 4. **文件**：
 

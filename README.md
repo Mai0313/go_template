@@ -81,7 +81,6 @@ Run the example CLI:
 3. **Docker**:
 
     - Update `docker/Dockerfile` labels and binary paths
-    - Update `.devcontainer/Dockerfile` labels
 
 4. **Documentation**:
 

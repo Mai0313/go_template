@@ -81,7 +81,6 @@ make build-all        # 交叉编译常见 OS/ARCH
 3. **Docker**：
 
     - 更新 `docker/Dockerfile` 标签和二进制路径
-    - 更新 `.devcontainer/Dockerfile` 标签
 
 4. **文档**：
 
