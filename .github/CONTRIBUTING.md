@@ -74,6 +74,7 @@ The required Go toolchain version is declared in `go.mod`. Install matching vers
 ```text
 cmd/go_template/     # Main CLI entrypoint
 core/version/        # Version utilities and tests
+cli/                 # npm and PyPI wrappers that run the prebuilt binary
 build/               # Build outputs (git‑ignored)
 docker/Dockerfile    # Multi‑stage image build
 ```
@@ -88,7 +89,7 @@ make run       # Build and run the main command
 make test      # Run the full test suite
 make fmt       # Format code (go fmt ./...)
 make build-all # Cross-compile common OS/ARCH targets
-make clean     # Remove build artifacts and caches
+make clean     # Remove build artifacts and caches, then run git fetch --prune and git gc --aggressive
 ```
 
 Recommended commands directly via `go`:
@@ -205,7 +206,7 @@ Prefer clarity over cleverness, and avoid unrelated refactors in feature or fix 
 
 ## Security Reports
 
-Please **do not** report security vulnerabilities through public issues. Refer to [`SECURITY.md`](./SECURITY.md) for the responsible disclosure process.
+Please **do not** report security vulnerabilities through public issues. Refer to the [security policy](https://github.com/Mai0313/go_template/security/policy) for the responsible disclosure process.
 
 ## Licensing
 

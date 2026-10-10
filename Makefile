@@ -47,7 +47,7 @@ $(CMDS):
 # ---
 
 .PHONY: build-all $(addprefix build_,$(subst /,_,$(PLATFORMS)))
-build-all: $(addprefix build_,$(subst /,_,$(PLATFORMS)))
+build-all: $(addprefix build_,$(subst /,_,$(PLATFORMS))) ## Cross-compile all commands for every platform
 
 # Generic cross-platform build function
 define build_platform
