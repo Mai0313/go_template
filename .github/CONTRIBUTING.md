@@ -162,7 +162,7 @@ Allowed types:
 | `feat`     | A new feature                                           |
 | `fix`      | A bug fix                                               |
 | `refactor` | Code change that neither fixes a bug nor adds a feature |
-| `doc`      | Documentation-only changes                              |
+| `docs`     | Documentation-only changes                              |
 | `perf`     | Performance improvement                                 |
 | `style`    | Formatting or stylistic changes                         |
 | `test`     | Adding or correcting tests                              |
