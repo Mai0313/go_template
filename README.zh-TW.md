@@ -34,16 +34,11 @@
 需求：
 
 - Go 1.24+
-- Docker（可選，用於容器化建置）
 
 本機開發：
 
 ```bash
 make build            # 編譯到 ./build/
-make run              # 編譯並執行主程式
-make test             # 執行測試並輸出覆蓋率
-make fmt              # go fmt ./...
-make build-all        # 跨平台編譯常見 OS/ARCH
 ```
 
 執行範例 CLI：
@@ -60,72 +55,8 @@ make build-all        # 跨平台編譯常見 OS/ARCH
 
 1. 點擊 **使用此模板** 建立你的倉庫
 2. 複製你的新倉庫
-3. 執行重新命名腳本或按照下方手動步驟操作
+3. 依照 [AGENTS.md](AGENTS.md) 重新命名 `go_template` 及其他模板識別字，該檔案列出它們出現的位置以及驗證方式
 
-### 手動重新命名步驟
+## 開發
 
-**必要修改**（將 `{your_project}` 替換為你的實際專案名稱）：
-
-1. **Go 模組**：
-
-    - 更新 `go.mod`：`module go_template` → `module {your_project}`
-    - 重新命名 `cmd/go_template/` → `cmd/{your_project}/`
-    - 更新 `cmd/{your_project}/main.go` 中的匯入
-    - 更新 `Makefile` 的 LDFLAGS（第17-19行）和 `BIN_NAME`（第23行）
-
-2. **CLI 包裝器**（如果使用 npm/PyPI 發佈）：
-
-    - Node.js：更新 `cli/nodejs/package.json` 和 `cli/nodejs/bin/start.js`
-    - Python：更新 `cli/python/pyproject.toml` 並重新命名 `cli/python/src/go_template/`
-
-3. **Docker**：
-
-    - 更新 `docker/Dockerfile` 標籤和二進位路徑
-
-4. **文件**：
-
-    - 更新 `README.md`、`README.zh-CN.md`、`README.zh-TW.md` 中的徽章 URL
-    - 更新 `.github/CODEOWNERS`
-
-**驗證**：
-
-```bash
-make clean && make build
-./build/{your_project} --version
-grep -r "go_template" --exclude-dir=.git --exclude-dir=build .
-```
-
-詳細說明請參見 [CLAUDE.md](CLAUDE.md)。
-
-## 專案結構
-
-```text
-cmd/go_template/     # 主 CLI 入口
-core/version/        # 版本工具與測試
-build/               # 編譯輸出（已加入 .gitignore）
-docker/Dockerfile    # 多階段映像建置
-```
-
-## Docker
-
-```bash
-# 本地建置與執行
-docker build -t your/image:dev -f docker/Dockerfile .
-docker run --rm -it your/image:dev
-```
-
-## CI/CD（GitHub Actions）
-
-- 測試：`.github/workflows/test.yml`
-- 品質：`.github/workflows/code-quality-check.yml`
-- 釋出打包：`.github/workflows/build_release.yml`
-- Docker 映像：`.github/workflows/build_image.yml`
-- 釋出草稿：`.github/workflows/release_drafter.yml`
-- 標籤與語義化：`.github/workflows/auto_labeler.yml`, `semantic-pull-request.yml`
-- 安全性：`.github/workflows/code_scan.yml`（gitleaks、codeql）
-
-## 貢獻指南
-
-- 提交前請執行 `make fmt && make test`
-- PR 請聚焦單一變更並附上測試
-- 使用 Conventional Commits 作為提交訊息
+開發環境設定、專案結構、本機與 Docker 建置、測試、CI 與程式碼慣例請見 [CONTRIBUTING.md](./.github/CONTRIBUTING.md)。

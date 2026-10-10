@@ -8,8 +8,11 @@ Thank you for your interest in contributing to this Go project. This document de
 - [Ways to Contribute](#ways-to-contribute)
 - [Reporting Issues](#reporting-issues)
 - [Development Setup](#development-setup)
+- [Project Layout](#project-layout)
 - [Local Workflow](#local-workflow)
+- [Docker](#docker)
 - [Testing](#testing)
+- [Continuous Integration](#continuous-integration)
 - [Branching Model](#branching-model)
 - [Commit Convention](#commit-convention)
 - [Pull Request Process](#pull-request-process)
@@ -66,13 +69,25 @@ make all
 
 The required Go toolchain version is declared in `go.mod`. Install matching versions via [`gvm`](https://github.com/moovweb/gvm), [`asdf`](https://asdf-vm.com/), or your platform's package manager.
 
+## Project Layout
+
+```text
+cmd/go_template/     # Main CLI entrypoint
+core/version/        # Version utilities and tests
+build/               # Build outputs (git‑ignored)
+docker/Dockerfile    # Multi‑stage image build
+```
+
 ## Local Workflow
 
 Common tasks are exposed via the `Makefile`. Run `make help` to list all targets. Frequently used ones:
 
 ```bash
 make all       # Build all commands
+make run       # Build and run the main command
 make test      # Run the full test suite
+make fmt       # Format code (go fmt ./...)
+make build-all # Cross-compile common OS/ARCH targets
 make clean     # Remove build artifacts and caches
 ```
 
@@ -87,6 +102,16 @@ golangci-lint run              # Run the configured linters (if installed)
 ```
 
 Always run `go fmt`, `go vet`, and the test suite before opening a pull request.
+
+## Docker
+
+Docker is optional and only needed for container builds.
+
+```bash
+# Build & run image locally
+docker build -t your/image:dev -f docker/Dockerfile .
+docker run --rm -it your/image:dev
+```
 
 ## Testing
 
@@ -103,6 +128,10 @@ go test ./path/to/pkg -run TestName            # Run a single test
 go test -count=1 ./...                         # Disable test caching
 go test -bench=. ./...                         # Run benchmarks
 ```
+
+## Continuous Integration
+
+The GitHub Actions workflows live in [`.github/workflows/`](./workflows/).
 
 ## Branching Model
 
@@ -152,6 +181,8 @@ Append `!` after the type or include `BREAKING CHANGE:` in the footer to indicat
 6. Link related issues and design documents.
 7. Mark the PR as **draft** while still in progress.
 8. Request review only after self-review and a green CI.
+
+Keep each pull request focused and small.
 
 Pull requests are typically merged via **squash merge** to keep history linear.
 

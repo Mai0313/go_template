@@ -34,16 +34,11 @@ Other Languages: [English](README.md) | [繁體中文](README.zh-TW.md) | [简�
 Prerequisites:
 
 - Go 1.24+
-- Docker (optional, for container builds)
 
 Local setup:
 
 ```bash
 make build            # build binaries into ./build/
-make run              # build and run the main command
-make test             # run unit tests with coverage
-make fmt              # format code (go fmt ./...)
-make build-all        # cross‑compile common OS/ARCH targets
 ```
 
 Run the example CLI:
@@ -60,72 +55,8 @@ Run the example CLI:
 
 1. Click **Use this template** to create your repository
 2. Clone your new repository
-3. Run the rename script or follow manual steps below
+3. Rename `go_template` and the other template identifiers by following [AGENTS.md](AGENTS.md), which lists where they appear and how to verify the rename
 
-### Manual Rename Steps
+## Development
 
-**Required changes** (replace `{your_project}` with your actual project name):
-
-1. **Go Module**:
-
-    - Update `go.mod`: `module go_template` → `module {your_project}`
-    - Rename `cmd/go_template/` → `cmd/{your_project}/`
-    - Update imports in `cmd/{your_project}/main.go`
-    - Update `Makefile` LDFLAGS (lines 17-19) and `BIN_NAME` (line 23)
-
-2. **CLI Wrappers** (if using npm/PyPI distribution):
-
-    - Node.js: Update `cli/nodejs/package.json` and `cli/nodejs/bin/start.js`
-    - Python: Update `cli/python/pyproject.toml` and rename `cli/python/src/go_template/`
-
-3. **Docker**:
-
-    - Update `docker/Dockerfile` labels and binary paths
-
-4. **Documentation**:
-
-    - Update badge URLs in `README.md`, `README.zh-CN.md`, `README.zh-TW.md`
-    - Update `.github/CODEOWNERS`
-
-**Verification**:
-
-```bash
-make clean && make build
-./build/{your_project} --version
-grep -r "go_template" --exclude-dir=.git --exclude-dir=build .
-```
-
-For detailed instructions, see [CLAUDE.md](CLAUDE.md).
-
-## Project Structure
-
-```text
-cmd/go_template/     # Main CLI entrypoint
-core/version/        # Version utilities and tests
-build/               # Build outputs (git‑ignored)
-docker/Dockerfile    # Multi‑stage image build
-```
-
-## Docker
-
-```bash
-# Build & run image locally
-docker build -t your/image:dev -f docker/Dockerfile .
-docker run --rm -it your/image:dev
-```
-
-## CI/CD (GitHub Actions)
-
-- tests: `.github/workflows/test.yml`
-- quality: `.github/workflows/code-quality-check.yml`
-- release package: `.github/workflows/build_release.yml`
-- docker image: `.github/workflows/build_image.yml`
-- release drafter: `.github/workflows/release_drafter.yml`
-- labels & semantics: `.github/workflows/auto_labeler.yml`, `semantic-pull-request.yml`
-- security: `.github/workflows/code_scan.yml` (gitleaks, codeql)
-
-## Contribution
-
-- Run `make fmt && make test` before pushing
-- Keep PRs focused and small; include tests
-- Use Conventional Commit messages
+Contributor setup, project layout, local and Docker builds, tests, CI, and code conventions live in [CONTRIBUTING.md](./.github/CONTRIBUTING.md).
