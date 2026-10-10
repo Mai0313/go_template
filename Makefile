@@ -106,7 +106,7 @@ $(foreach platform,$(PLATFORMS),$(eval $(call package_platform,$(platform))))
 
 # Clean build artifacts
 .PHONY: clean
-clean: ## Remove build artifacts
+clean: ## Remove build artifacts and Go caches, then run git fetch --prune and git gc --aggressive
 	@rm -rf $(BUILD_DIR) coverage.out
 	@find . -type f -name "*.DS_Store" -ls -delete
 	@find . -type f -name "*.zip" -ls -delete
