@@ -45,7 +45,7 @@ Use `git mv` for directory renames so Git can preserve history, then update cont
 
 Every existing badge in every README is permanent. Never delete an existing README badge. During initialization, only add badges or modify an existing badge's URL, package name, workflow link, or display data to match the new project. For example, if npm publishing is not yet available, update its badge to a correct and verifiable target or document the release status. This rule does not have a later-project exception.
 
-After initialization, READMEs must be product documentation rather than copies of the template setup guide. Describe what the project does, prerequisites, real commands, common workflows, container usage, and release method. `CLAUDE.md` is the Agent instruction document for initialization and maintenance.
+After initialization, READMEs must be product documentation rather than copies of the template setup guide. Describe what the project does, prerequisites, real commands, common workflows, container usage, and release method. `AGENTS.md` is the Agent instruction document for initialization and maintenance.
 
 ## GitHub Actions and Release Contracts
 
